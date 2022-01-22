@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: markets-api
+  data:
+    mongodb:
+      uri: mongodb://markets:markets@localhost:27017/marketsDB?authSource=admin&retryWrites=true&w=majority
+      auto-index-creation: true
+      database: marketsDB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState,ping
+        readiness:
+          include: readinessState
+
+server:
+  port: 8080
+  shutdown: graceful
