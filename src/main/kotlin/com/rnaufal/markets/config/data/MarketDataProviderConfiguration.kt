@@ -1,7 +1,8 @@
 package com.rnaufal.markets.config.data
 
 import com.rnaufal.markets.domains.Market
-import com.rnaufal.markets.gateways.MarketGateway
+import com.rnaufal.markets.gateways.repositories.MarketRepository
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.apache.commons.csv.CSVFormat
@@ -17,7 +18,7 @@ import java.io.InputStreamReader
 
 @Configuration
 class MarketDataProviderConfiguration(
-    private val marketGateway: MarketGateway,
+    private val marketRepository: MarketRepository,
     @Value("classpath:DEINFO_AB_FEIRASLIVRES_2014.csv") private val marketsDataResource: Resource
 ) {
 
@@ -35,54 +36,58 @@ class MarketDataProviderConfiguration(
     }
 
     internal fun internalLoadMarkets() {
-        val csvParser = buildCsvParser(marketsDataResource)
-        for (csvRecord in csvParser) {
-            val identifier = csvRecord.get("ID").toInt()
-            val longitude = csvRecord.get("LONG").toLong()
-            val latitude = csvRecord.get("LAT").toLong()
-            val setCens = csvRecord.get("SETCENS").toLong()
-            val area = csvRecord.get("AREAP").toLong()
-            val districtCode = csvRecord.get("CODDIST").toInt()
-            val district = csvRecord.get("DISTRITO").toString()
-            val townCode = csvRecord.get("CODSUBPREF").toInt()
-            val town = csvRecord.get("SUBPREFE").toString()
-            val firstZone = csvRecord.get("REGIAO5").toString()
-            val secondZone = csvRecord.get("REGIAO8").toString()
-            val marketName = csvRecord.get("NOME_FEIRA").toString()
-            val registryCode = csvRecord.get("REGISTRO").toString()
-            val publicArea = csvRecord.get("LOGRADOURO").toString()
-            val number = csvRecord.get("NUMERO").toString()
-            val neighborhood = csvRecord.get("BAIRRO").toString()
-            val reference = when {
-                csvRecord.isSet("REFERENCIA") -> csvRecord.get("REFERENCIA").toString()
-                else -> null
-            }
-            runBlocking {
-                val market = Market(
-                    identifier = identifier,
-                    longitude = longitude,
-                    latitude = latitude,
-                    setCens = setCens,
-                    area = area,
-                    districtCode = districtCode,
-                    district = district,
-                    townCode = townCode,
-                    town = town,
-                    firstZone = firstZone,
-                    secondZone = secondZone,
-                    name = marketName,
-                    registryCode = registryCode,
-                    publicArea = publicArea,
-                    number = number,
-                    neighborhood = neighborhood,
-                    reference = reference
-                )
-                marketGateway.findByRegistryCode(market.registryCode)?.also {
-                    logger.info { "$it already loaded successfully" }
-                } ?: marketGateway.save(market).also {
-                    logger.info { "$it saved successfully" }
-                }
-            }
+        runBlocking {
+            marketRepository.count()
+                .awaitFirstOrNull()
+                .takeIf { it == 0L }
+                ?.run {
+                    val csvParser = buildCsvParser(marketsDataResource)
+                    val markets = csvParser.records
+                        .map {
+                            val identifier = it["ID"].toInt()
+                            val longitude = it["LONG"].toLong()
+                            val latitude = it["LAT"].toLong()
+                            val setCens = it["SETCENS"].toLong()
+                            val area = it["AREAP"].toLong()
+                            val districtCode = it["CODDIST"].toInt()
+                            val district = it["DISTRITO"].toString()
+                            val townCode = it["CODSUBPREF"].toInt()
+                            val town = it["SUBPREFE"].toString()
+                            val firstZone = it["REGIAO5"].toString()
+                            val secondZone = it["REGIAO8"].toString()
+                            val marketName = it["NOME_FEIRA"].toString()
+                            val registryCode = it["REGISTRO"].toString()
+                            val publicArea = it["LOGRADOURO"].toString()
+                            val number = it["NUMERO"].toString()
+                            val neighborhood = it["BAIRRO"].toString()
+                            val reference = when {
+                                it.isSet("REFERENCIA") -> it["REFERENCIA"].toString()
+                                else -> null
+                            }
+                            Market(
+                                identifier = identifier,
+                                longitude = longitude,
+                                latitude = latitude,
+                                setCens = setCens,
+                                area = area,
+                                districtCode = districtCode,
+                                district = district,
+                                townCode = townCode,
+                                town = town,
+                                firstZone = firstZone,
+                                secondZone = secondZone,
+                                name = marketName,
+                                registryCode = registryCode,
+                                publicArea = publicArea,
+                                number = number,
+                                neighborhood = neighborhood,
+                                reference = reference
+                            )
+                        }
+                    marketRepository.saveAll(markets).awaitFirstOrNull().also {
+                        logger.info { "Markets file loaded successfully with ${markets.size} markets" }
+                    }
+                } ?: logger.info { "Markets data already loaded" }
         }
     }
 
