@@ -1,8 +1,8 @@
 package com.rnaufal.markets.gateways.http.controllers
 
 import com.rnaufal.markets.IntegrationTests
-import com.rnaufal.markets.fixture.MarketFixtureFactory
 import com.rnaufal.markets.fixture.CreateMarketV1RequestFactory
+import com.rnaufal.markets.fixture.MarketFixtureFactory
 import com.rnaufal.markets.fixture.UpdateMarketV1RequestFactory
 import com.rnaufal.markets.gateways.repositories.MarketRepository
 import kotlinx.coroutines.reactive.awaitFirstOrNull
