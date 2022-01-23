@@ -1,12 +1,13 @@
 package com.rnaufal.markets.usecases
 
 import com.rnaufal.markets.domains.Market
+import com.rnaufal.markets.exceptions.MarketNotFoundException
 import com.rnaufal.markets.gateways.MarketGateway
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
 @Service
-class CreateMarket(private val marketGateway: MarketGateway) {
+class MarketService(private val marketGateway: MarketGateway) {
 
     companion object {
         private val logger = KotlinLogging.logger { }
@@ -15,9 +16,22 @@ class CreateMarket(private val marketGateway: MarketGateway) {
     suspend fun execute(
         market: Market
     ): Market {
+        logger.info { "Creating market $market" }
+
         return when (val maybeMarket = marketGateway.findByRegistryCode(market.registryCode)) {
             null -> marketGateway.save(market).also { logger.info { "Market $market created successfully" } }
             else -> maybeMarket
         }
     }
+
+    suspend fun delete(code: String) {
+        logger.info { "Deleting market by registry code $code" }
+
+        marketGateway.delete(findMarketByRegistryCode(code))
+    }
+
+    private suspend fun findMarketByRegistryCode(code: String) =
+        marketGateway.findByRegistryCode(code) ?: throw MarketNotFoundException(
+            "Market code $code not found"
+        )
 }

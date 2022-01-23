@@ -9,9 +9,9 @@ import org.valiktor.springframework.http.ValiktorExceptionHandler
 import org.valiktor.springframework.http.ValiktorResponse
 import java.util.Locale
 
-data class ErrorResponse(val errors: List<ErrorDetail>)
+data class ValidationErrorResponse(val errors: List<ValidationError>)
 
-data class ErrorDetail(
+data class ValidationError(
     val property: String,
     val value: String,
     val errorMessage: String
@@ -20,15 +20,15 @@ data class ErrorDetail(
 @Component
 class ValidationExceptionHandler(
     private val config: ValiktorConfiguration
-) : ValiktorExceptionHandler<ErrorResponse> {
+) : ValiktorExceptionHandler<ValidationErrorResponse> {
 
     override fun handle(exception: ConstraintViolationException, locale: Locale) =
         ValiktorResponse(
             statusCode = HttpStatus.BAD_REQUEST,
-            body = ErrorResponse(
+            body = ValidationErrorResponse(
                 errors = exception.constraintViolations
                     .mapToMessage(baseName = config.baseBundleName, locale = locale)
-                    .map { ErrorDetail(it.property, it.value.toString(), it.message) }
+                    .map { ValidationError(it.property, it.value.toString(), it.message) }
             )
         )
 }

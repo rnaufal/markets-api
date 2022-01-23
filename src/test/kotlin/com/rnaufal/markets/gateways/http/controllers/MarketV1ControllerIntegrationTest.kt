@@ -1,8 +1,10 @@
 package com.rnaufal.markets.gateways.http.controllers
 
 import com.rnaufal.markets.IntegrationTests
+import com.rnaufal.markets.fixture.MarketFixtureFactory
 import com.rnaufal.markets.fixture.MarketV1RequestFixtureFactory
 import com.rnaufal.markets.gateways.repositories.MarketRepository
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Nested
@@ -116,6 +118,36 @@ class MarketV1ControllerIntegrationTest(
                     )
                 )
                 .jsonPath("$.errors[*].errorMessage").isNotEmpty
+        }
+    }
+
+    @Nested
+    inner class DeleteMarketScenarios {
+
+        @Test
+        fun `should delete market successfully`(): Unit = runBlocking {
+            val market = MarketFixtureFactory.buildMarket()
+
+            marketRepository.save(market).awaitFirstOrNull()
+
+            webTestClient.delete()
+                .uri("/api/v1/markets/${market.registryCode}")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isNoContent
+        }
+
+        @Test
+        fun `should return error response when deleting market not found`(): Unit = runBlocking {
+            webTestClient.delete()
+                .uri("/api/v1/markets/3456-2")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isNotFound
+                .expectBody()
+                .jsonPath("$.message").isNotEmpty
         }
     }
 }

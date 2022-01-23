@@ -1,7 +1,7 @@
 package com.rnaufal.markets.gateways
 
-import com.rnaufal.markets.fixture.MarketFixtureFactory
 import com.rnaufal.markets.domains.Market
+import com.rnaufal.markets.fixture.MarketFixtureFactory
 import com.rnaufal.markets.gateways.repositories.MarketRepository
 import io.mockk.coEvery
 import io.mockk.confirmVerified
@@ -47,6 +47,22 @@ class MongoDBMarketGatewayTest(@MockK private val marketRepository: MarketReposi
         assertThat(maybeMarket).usingRecursiveComparison().isEqualTo(market)
 
         verify { marketRepository.findByRegistryCode(market.registryCode) }
+        confirmVerified(marketRepository)
+    }
+
+    @Test
+    fun `should delete market successfully`() = runBlocking {
+        val market = MarketFixtureFactory.buildMarket()
+
+        val marketDeletionSlot = slot<Market>()
+        coEvery { marketRepository.delete(capture(marketDeletionSlot)) } returns Mono.empty()
+
+        marketGateway.delete(market)
+
+        val capturedMarket = marketDeletionSlot.captured
+        assertThat(capturedMarket).usingRecursiveComparison().isEqualTo(market)
+
+        verify { marketRepository.delete(market) }
         confirmVerified(marketRepository)
     }
 }

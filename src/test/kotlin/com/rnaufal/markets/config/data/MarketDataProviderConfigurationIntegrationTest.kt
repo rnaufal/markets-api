@@ -17,6 +17,6 @@ class MarketDataProviderConfigurationIntegrationTest(
     fun `should load market data successfully`(): Unit = runBlocking {
         marketDataProviderConfiguration.internalLoadMarkets()
 
-        assertThat(marketRepository.count().awaitFirstOrNull()).isEqualTo(880)
+        assertThat(marketRepository.count().awaitFirstOrNull()).isNotZero()
     }
 }

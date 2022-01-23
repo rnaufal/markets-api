@@ -4,11 +4,13 @@ import com.rnaufal.markets.gateways.http.json.CreateMarketV1Request
 import com.rnaufal.markets.gateways.http.json.toModel
 import com.rnaufal.markets.gateways.http.json.toResponse
 import com.rnaufal.markets.gateways.http.json.validate
-import com.rnaufal.markets.usecases.CreateMarket
+import com.rnaufal.markets.usecases.MarketService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("api/v1/markets")
-class MarketV1Controller(private val createMarket: CreateMarket) {
+class MarketV1Controller(private val marketService: MarketService) {
 
     @Operation(tags = ["Markets"], summary = "Create a market")
     @ApiResponses(
@@ -28,7 +30,7 @@ class MarketV1Controller(private val createMarket: CreateMarket) {
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid request for market creation"
+                description = "Invalid request for market creation."
             ),
         ]
     )
@@ -36,5 +38,24 @@ class MarketV1Controller(private val createMarket: CreateMarket) {
     @PostMapping
     suspend fun create(
         @RequestBody request: CreateMarketV1Request
-    ) = request.validate().run { createMarket.execute(request.toModel()) }.toResponse()
+    ) = request.validate().run { marketService.execute(request.toModel()) }.toResponse()
+
+    @Operation(tags = ["Markets"], summary = "Delete a market by its registry code")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                description = "Market deleted successfully."
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Market not found."
+            ),
+        ]
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{code}")
+    suspend fun delete(
+        @PathVariable code: String,
+    ) = marketService.delete(code)
 }
