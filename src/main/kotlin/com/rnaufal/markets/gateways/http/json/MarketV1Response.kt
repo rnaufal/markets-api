@@ -2,7 +2,7 @@ package com.rnaufal.markets.gateways.http.json
 
 import com.rnaufal.markets.domains.Market
 
-data class CreateMarketV1Response(
+data class MarketV1Response(
     val id: String?,
     val legacyIdentifier: Int,
     val longitude: Long,
@@ -23,8 +23,8 @@ data class CreateMarketV1Response(
     val reference: String? = null,
 )
 
-fun Market.toResponse(): CreateMarketV1Response {
-    return CreateMarketV1Response(
+fun Market.toResponse(): MarketV1Response {
+    return MarketV1Response(
         id = id,
         legacyIdentifier = legacyIdentifier,
         longitude = longitude,

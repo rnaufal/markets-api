@@ -24,10 +24,10 @@ class MarketService(private val marketGateway: MarketGateway) {
         }
     }
 
-    suspend fun delete(code: String) {
-        logger.info { "Deleting market by registry code $code" }
+    suspend fun delete(registryCode: String) {
+        logger.info { "Deleting market by registry code $registryCode" }
 
-        marketGateway.delete(findMarketByRegistryCode(code))
+        marketGateway.delete(findMarketByRegistryCode(registryCode))
     }
 
     suspend fun getById(id: String) =

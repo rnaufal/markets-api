@@ -55,10 +55,10 @@ class MarketV1Controller(private val marketService: MarketService) {
         ]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{code}")
+    @DeleteMapping("/{registryCode}")
     suspend fun delete(
-        @PathVariable code: String,
-    ) = marketService.delete(code)
+        @PathVariable registryCode: String,
+    ) = marketService.delete(registryCode)
 
     @Operation(tags = ["Markets"], summary = "Get a market by its id")
     @ApiResponses(
