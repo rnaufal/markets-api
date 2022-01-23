@@ -26,7 +26,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
     inner class CreateMarketTests {
 
         @Test
-        fun `should create new market with success`(): Unit = runBlocking {
+        fun `should create new market with success`() = runBlocking {
             val market = MarketFixtureFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
@@ -41,7 +41,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
         }
 
         @Test
-        fun `should return existing market`(): Unit = runBlocking {
+        fun `should return existing market`() = runBlocking {
             val expected = MarketFixtureFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(expected.registryCode) } returns expected
@@ -59,7 +59,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
     inner class DeleteMarketTests {
 
         @Test
-        fun `should delete existing market with success`(): Unit = runBlocking {
+        fun `should delete existing market with success`() = runBlocking {
             val market = MarketFixtureFactory.buildMarket()
 
             val marketDeletionSlot = slot<Market>()
@@ -77,7 +77,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
         }
 
         @Test
-        fun `should throw exception when trying to delete a market not found`(): Unit = runBlocking {
+        fun `should throw exception when trying to delete a market not found by code`() = runBlocking {
             val market = MarketFixtureFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
@@ -86,6 +86,36 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
             coVerify { marketGateway.findByRegistryCode(market.registryCode) }
             coVerify(exactly = 0) { marketGateway.delete(market) }
+            confirmVerified(marketGateway)
+        }
+    }
+
+    @Nested
+    inner class FindMarketTests {
+
+        @Test
+        fun `should find market by id successfully`() = runBlocking {
+            val market = MarketFixtureFactory.buildMarketWithId()
+
+            coEvery { marketGateway.findById(market.id.toString()) } returns market
+
+            val marketFound = marketService.getById(market.id.toString())
+
+            assertThat(marketFound).usingRecursiveComparison().isEqualTo(market)
+
+            coVerify { marketGateway.findById(market.id.toString()) }
+            confirmVerified(marketGateway)
+        }
+
+        @Test
+        fun `should throw exception when market not found by id`() = runBlocking {
+            val id = "123456"
+
+            coEvery { marketGateway.findById(id) } returns null
+
+            assertThrows<MarketNotFoundException> { marketService.getById(id) }
+
+            coVerify { marketGateway.findById(id) }
             confirmVerified(marketGateway)
         }
     }

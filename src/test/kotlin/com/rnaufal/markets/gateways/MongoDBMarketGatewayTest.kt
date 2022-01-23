@@ -37,7 +37,7 @@ class MongoDBMarketGatewayTest(@MockK private val marketRepository: MarketReposi
     }
 
     @Test
-    fun `should find market successfully`() = runBlocking {
+    fun `should find market by code successfully`() = runBlocking {
         val market = MarketFixtureFactory.buildMarket()
 
         coEvery { marketRepository.findByRegistryCode(market.registryCode) } returns Mono.just(market)
@@ -63,6 +63,20 @@ class MongoDBMarketGatewayTest(@MockK private val marketRepository: MarketReposi
         assertThat(capturedMarket).usingRecursiveComparison().isEqualTo(market)
 
         verify { marketRepository.delete(market) }
+        confirmVerified(marketRepository)
+    }
+
+    @Test
+    fun `should find market by id successfully`() = runBlocking {
+        val market = MarketFixtureFactory.buildMarketWithId()
+
+        coEvery { marketRepository.findByRegistryCode(market.id.toString()) } returns Mono.just(market)
+
+        val maybeMarket = marketGateway.findByRegistryCode(market.id.toString())
+
+        assertThat(maybeMarket).usingRecursiveComparison().isEqualTo(market)
+
+        verify { marketRepository.findByRegistryCode(market.id.toString()) }
         confirmVerified(marketRepository)
     }
 }

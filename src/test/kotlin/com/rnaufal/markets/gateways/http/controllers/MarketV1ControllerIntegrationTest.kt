@@ -150,4 +150,42 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.message").isNotEmpty
         }
     }
+
+    @Nested
+    inner class FindMarketScenarios {
+
+        @Test
+        fun `should find market by id successfully`(): Unit = runBlocking {
+
+            val market = MarketFixtureFactory.buildMarket()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrNull()
+
+            webTestClient.get()
+                .uri("/api/v1/markets/${market?.id}")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+                .jsonPath("$.legacyIdentifier").isEqualTo(MarketFixtureFactory.buildMarket().legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(MarketFixtureFactory.buildMarket().longitude)
+                .jsonPath("$.latitude").isEqualTo(MarketFixtureFactory.buildMarket().latitude)
+                .jsonPath("$.setCens").isEqualTo(MarketFixtureFactory.buildMarket().setCens)
+                .jsonPath("$.area").isEqualTo(MarketFixtureFactory.buildMarket().area)
+                .jsonPath("$.districtCode").isEqualTo(MarketFixtureFactory.buildMarket().districtCode)
+                .jsonPath("$.district").isEqualTo(MarketFixtureFactory.buildMarket().district)
+                .jsonPath("$.townCode").isEqualTo(MarketFixtureFactory.buildMarket().townCode)
+                .jsonPath("$.town").isEqualTo(MarketFixtureFactory.buildMarket().town)
+                .jsonPath("$.firstZone").isEqualTo(MarketFixtureFactory.buildMarket().firstZone)
+                .jsonPath("$.secondZone").isEqualTo(MarketFixtureFactory.buildMarket().secondZone)
+                .jsonPath("$.name").isEqualTo(MarketFixtureFactory.buildMarket().name)
+                .jsonPath("$.registryCode").isEqualTo(MarketFixtureFactory.buildMarket().registryCode)
+                .jsonPath("$.publicArea").isEqualTo(MarketFixtureFactory.buildMarket().publicArea)
+                .jsonPath("$.number").isEqualTo(MarketFixtureFactory.buildMarket().number)
+                .jsonPath("$.neighborhood").isEqualTo(MarketFixtureFactory.buildMarket().neighborhood)
+                .jsonPath("$.reference").isEqualTo(MarketFixtureFactory.buildMarket().reference!!)
+        }
+    }
 }

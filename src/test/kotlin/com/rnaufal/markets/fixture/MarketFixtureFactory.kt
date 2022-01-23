@@ -1,6 +1,7 @@
 package com.rnaufal.markets.fixture
 
 import com.rnaufal.markets.domains.Market
+import java.util.UUID
 
 class MarketFixtureFactory {
 
@@ -26,5 +27,8 @@ class MarketFixtureFactory {
                 neighborhood = "VL FORMOSA",
                 reference = "TV RUA PRETORIA"
             )
+
+        fun buildMarketWithId() =
+            buildMarket().copy(id = UUID.randomUUID().toString())
     }
 }

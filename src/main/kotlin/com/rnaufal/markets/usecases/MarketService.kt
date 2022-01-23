@@ -30,8 +30,11 @@ class MarketService(private val marketGateway: MarketGateway) {
         marketGateway.delete(findMarketByRegistryCode(code))
     }
 
+    suspend fun getById(id: String) =
+        marketGateway.findById(id) ?: throw MarketNotFoundException("Market with id $id not found")
+
     private suspend fun findMarketByRegistryCode(code: String) =
         marketGateway.findByRegistryCode(code) ?: throw MarketNotFoundException(
-            "Market code $code not found"
+            "Market with code $code not found"
         )
 }

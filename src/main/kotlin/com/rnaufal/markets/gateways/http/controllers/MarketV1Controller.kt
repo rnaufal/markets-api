@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -58,4 +59,23 @@ class MarketV1Controller(private val marketService: MarketService) {
     suspend fun delete(
         @PathVariable code: String,
     ) = marketService.delete(code)
+
+    @Operation(tags = ["Markets"], summary = "Get a market by its id")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Returns Market by its id."
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Market not found."
+            ),
+        ]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    suspend fun getById(
+        @PathVariable id: String,
+    ) = marketService.getById(id).toResponse()
 }

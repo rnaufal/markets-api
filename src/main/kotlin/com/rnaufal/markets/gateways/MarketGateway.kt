@@ -13,6 +13,8 @@ interface MarketGateway {
     suspend fun findByRegistryCode(registryCode: String): Market?
 
     suspend fun delete(market: Market)
+
+    suspend fun findById(id: String): Market?
 }
 
 @Component
@@ -26,4 +28,6 @@ class MongoDBMarketGateway(private val marketRepository: MarketRepository) : Mar
     override suspend fun delete(market: Market) {
         marketRepository.delete(market).awaitFirstOrNull()
     }
+
+    override suspend fun findById(id: String) = marketRepository.findById(id).awaitFirstOrNull()
 }
