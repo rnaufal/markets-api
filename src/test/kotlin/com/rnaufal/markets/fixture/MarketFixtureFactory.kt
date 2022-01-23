@@ -30,5 +30,24 @@ class MarketFixtureFactory {
 
         fun buildMarketWithId() =
             buildMarket().copy(id = UUID.randomUUID().toString())
+
+        fun buildUpdatedMarket() = buildMarket().copy(
+            legacyIdentifier = 4,
+            longitude = -46513450,
+            latitude = -23520880,
+            setCens = 355030859000173,
+            area = 3550308005145,
+            districtCode = 60,
+            district = "PENHA",
+            townCode = 21,
+            town = "PENHA",
+            firstZone = "Leste",
+            secondZone = "Leste 1",
+            name = "VILA NOVA GRANADA",
+            publicArea = "RUA FRANCISCO DE OLIVEIRA BRAGA",
+            number = "13.000000",
+            neighborhood = "VL NOVA GRANADA",
+            reference = "RUA OLIVIA DE OLIVEIRA"
+        )
     }
 }

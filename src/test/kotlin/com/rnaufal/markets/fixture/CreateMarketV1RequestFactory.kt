@@ -2,7 +2,7 @@ package com.rnaufal.markets.fixture
 
 import com.rnaufal.markets.gateways.http.json.CreateMarketV1Request
 
-class MarketV1RequestFixtureFactory {
+class CreateMarketV1RequestFactory {
 
     companion object {
         fun buildSuccessfulRequest() =

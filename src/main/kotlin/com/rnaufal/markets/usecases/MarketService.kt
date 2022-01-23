@@ -13,11 +13,9 @@ class MarketService(private val marketGateway: MarketGateway) {
         private val logger = KotlinLogging.logger { }
     }
 
-    suspend fun execute(
+    suspend fun create(
         market: Market
     ): Market {
-        logger.info { "Creating market $market" }
-
         return when (val maybeMarket = marketGateway.findByRegistryCode(market.registryCode)) {
             null -> marketGateway.save(market).also { logger.info { "Market $market created successfully" } }
             else -> maybeMarket
@@ -25,15 +23,28 @@ class MarketService(private val marketGateway: MarketGateway) {
     }
 
     suspend fun delete(registryCode: String) {
-        logger.info { "Deleting market by registry code $registryCode" }
-
-        marketGateway.delete(findMarketByRegistryCode(registryCode))
+        marketGateway.delete(getByRegistryCode(registryCode)).also {
+            logger.info { "Market with registry code $registryCode deleted" }
+        }
     }
 
-    suspend fun getById(id: String) =
-        marketGateway.findById(id) ?: throw MarketNotFoundException("Market with id $id not found")
+    suspend fun getById(id: String): Market {
+        return marketGateway.findById(id)
+            .also {
+                logger.info { "Market $it found" }
+            } ?: throw MarketNotFoundException("Market with id $id not found")
+    }
 
-    private suspend fun findMarketByRegistryCode(code: String) =
+    suspend fun update(updatedMarket: Market) =
+        getByRegistryCode(updatedMarket.registryCode)
+            .update(updatedMarket)
+            .run {
+                marketGateway.save(this)
+            }.also {
+                logger.info { "Market $it was updated" }
+            }
+
+    private suspend fun getByRegistryCode(code: String) =
         marketGateway.findByRegistryCode(code) ?: throw MarketNotFoundException(
             "Market with code $code not found"
         )

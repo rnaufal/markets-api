@@ -2,7 +2,8 @@ package com.rnaufal.markets.gateways.http.controllers
 
 import com.rnaufal.markets.IntegrationTests
 import com.rnaufal.markets.fixture.MarketFixtureFactory
-import com.rnaufal.markets.fixture.MarketV1RequestFixtureFactory
+import com.rnaufal.markets.fixture.CreateMarketV1RequestFactory
+import com.rnaufal.markets.fixture.UpdateMarketV1RequestFactory
 import com.rnaufal.markets.gateways.repositories.MarketRepository
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
@@ -24,40 +25,40 @@ class MarketV1ControllerIntegrationTest(
 
         @Test
         fun `should create market without reference successfully`(): Unit = runBlocking {
-            val marketV1Request = MarketV1RequestFixtureFactory.buildSuccessfulRequest()
+            val createMarketV1Request = CreateMarketV1RequestFactory.buildSuccessfulRequest()
 
             webTestClient.post()
                 .uri("/api/v1/markets")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(marketV1Request))
+                .body(BodyInserters.fromValue(createMarketV1Request))
                 .exchange()
                 .expectStatus()
                 .isCreated
                 .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
-                .jsonPath("$.legacyIdentifier").isEqualTo(marketV1Request.legacyIdentifier)
-                .jsonPath("$.longitude").isEqualTo(marketV1Request.longitude)
-                .jsonPath("$.latitude").isEqualTo(marketV1Request.latitude)
-                .jsonPath("$.setCens").isEqualTo(marketV1Request.setCens)
-                .jsonPath("$.area").isEqualTo(marketV1Request.area)
-                .jsonPath("$.districtCode").isEqualTo(marketV1Request.districtCode)
-                .jsonPath("$.district").isEqualTo(marketV1Request.district)
-                .jsonPath("$.townCode").isEqualTo(marketV1Request.townCode)
-                .jsonPath("$.town").isEqualTo(marketV1Request.town)
-                .jsonPath("$.firstZone").isEqualTo(marketV1Request.firstZone)
-                .jsonPath("$.secondZone").isEqualTo(marketV1Request.secondZone)
-                .jsonPath("$.name").isEqualTo(marketV1Request.name)
-                .jsonPath("$.registryCode").isEqualTo(marketV1Request.registryCode)
-                .jsonPath("$.publicArea").isEqualTo(marketV1Request.publicArea)
-                .jsonPath("$.number").isEqualTo(marketV1Request.number)
-                .jsonPath("$.neighborhood").isEqualTo(marketV1Request.neighborhood)
+                .jsonPath("$.legacyIdentifier").isEqualTo(createMarketV1Request.legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(createMarketV1Request.longitude)
+                .jsonPath("$.latitude").isEqualTo(createMarketV1Request.latitude)
+                .jsonPath("$.setCens").isEqualTo(createMarketV1Request.setCens)
+                .jsonPath("$.area").isEqualTo(createMarketV1Request.area)
+                .jsonPath("$.districtCode").isEqualTo(createMarketV1Request.districtCode)
+                .jsonPath("$.district").isEqualTo(createMarketV1Request.district)
+                .jsonPath("$.townCode").isEqualTo(createMarketV1Request.townCode)
+                .jsonPath("$.town").isEqualTo(createMarketV1Request.town)
+                .jsonPath("$.firstZone").isEqualTo(createMarketV1Request.firstZone)
+                .jsonPath("$.secondZone").isEqualTo(createMarketV1Request.secondZone)
+                .jsonPath("$.name").isEqualTo(createMarketV1Request.name)
+                .jsonPath("$.registryCode").isEqualTo(createMarketV1Request.registryCode)
+                .jsonPath("$.publicArea").isEqualTo(createMarketV1Request.publicArea)
+                .jsonPath("$.number").isEqualTo(createMarketV1Request.number)
+                .jsonPath("$.neighborhood").isEqualTo(createMarketV1Request.neighborhood)
                 .jsonPath("$.reference").isEmpty
         }
 
         @Test
         fun `should create market with reference successfully`(): Unit = runBlocking {
-            val marketV1Request = MarketV1RequestFixtureFactory.buildReferenceSuccessfulRequest()
+            val marketV1Request = CreateMarketV1RequestFactory.buildReferenceSuccessfulRequest()
 
             webTestClient.post()
                 .uri("/api/v1/markets")
@@ -90,7 +91,7 @@ class MarketV1ControllerIntegrationTest(
 
         @Test
         fun `should return bad request when market has validation errors`(): Unit = runBlocking {
-            val marketV1Request = MarketV1RequestFixtureFactory.buildInvalidRequest()
+            val marketV1Request = CreateMarketV1RequestFactory.buildInvalidRequest()
 
             webTestClient.post()
                 .uri("/api/v1/markets")
@@ -186,6 +187,63 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.number").isEqualTo(MarketFixtureFactory.buildMarket().number)
                 .jsonPath("$.neighborhood").isEqualTo(MarketFixtureFactory.buildMarket().neighborhood)
                 .jsonPath("$.reference").isEqualTo(MarketFixtureFactory.buildMarket().reference!!)
+        }
+    }
+
+    @Nested
+    inner class UpdateMarketScenarios {
+
+        @Test
+        fun `should update market successfully`(): Unit = runBlocking {
+            val market = MarketFixtureFactory.buildMarket()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrNull()
+
+            val updateMarketV1Request = UpdateMarketV1RequestFactory.buildSuccessfulRequest()
+
+            webTestClient.patch()
+                .uri("/api/v1/markets/${market?.registryCode}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(updateMarketV1Request))
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+                .jsonPath("$.legacyIdentifier").isEqualTo(updateMarketV1Request.legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(updateMarketV1Request.longitude)
+                .jsonPath("$.latitude").isEqualTo(updateMarketV1Request.latitude)
+                .jsonPath("$.setCens").isEqualTo(updateMarketV1Request.setCens)
+                .jsonPath("$.area").isEqualTo(updateMarketV1Request.area)
+                .jsonPath("$.districtCode").isEqualTo(updateMarketV1Request.districtCode)
+                .jsonPath("$.district").isEqualTo(updateMarketV1Request.district)
+                .jsonPath("$.townCode").isEqualTo(updateMarketV1Request.townCode)
+                .jsonPath("$.town").isEqualTo(updateMarketV1Request.town)
+                .jsonPath("$.firstZone").isEqualTo(updateMarketV1Request.firstZone)
+                .jsonPath("$.secondZone").isEqualTo(updateMarketV1Request.secondZone)
+                .jsonPath("$.name").isEqualTo(updateMarketV1Request.name)
+                .jsonPath("$.registryCode").isEqualTo(market?.registryCode!!)
+                .jsonPath("$.publicArea").isEqualTo(updateMarketV1Request.publicArea)
+                .jsonPath("$.number").isEqualTo(updateMarketV1Request.number)
+                .jsonPath("$.neighborhood").isEqualTo(updateMarketV1Request.neighborhood)
+                .jsonPath("$.reference").isEqualTo(updateMarketV1Request.reference!!)
+        }
+
+        @Test
+        fun `should return error response when updating market not found`(): Unit = runBlocking {
+            val updateMarketV1Request = UpdateMarketV1RequestFactory.buildSuccessfulRequest()
+
+            webTestClient.patch()
+                .uri("/api/v1/markets/1234-5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(updateMarketV1Request))
+                .exchange()
+                .expectStatus()
+                .isNotFound
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.message").isNotEmpty
         }
     }
 }

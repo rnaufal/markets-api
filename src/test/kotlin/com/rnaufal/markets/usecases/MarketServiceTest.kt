@@ -32,7 +32,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
             coEvery { marketGateway.save(market) } returns market
 
-            val created = marketService.execute(market)
+            val created = marketService.create(market)
             assertThat(created).usingRecursiveComparison().isEqualTo(market)
 
             coVerify { marketGateway.findByRegistryCode(market.registryCode) }
@@ -46,7 +46,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
             coEvery { marketGateway.findByRegistryCode(expected.registryCode) } returns expected
 
-            val created = marketService.execute(expected)
+            val created = marketService.create(expected)
             assertThat(created).usingRecursiveComparison().isEqualTo(expected)
 
             coVerify { marketGateway.findByRegistryCode(expected.registryCode) }
@@ -77,7 +77,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
         }
 
         @Test
-        fun `should throw exception when trying to delete a market not found by code`() = runBlocking {
+        fun `should throw exception when trying to delete a market not found by registry code`() = runBlocking {
             val market = MarketFixtureFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
@@ -116,6 +116,40 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
             assertThrows<MarketNotFoundException> { marketService.getById(id) }
 
             coVerify { marketGateway.findById(id) }
+            confirmVerified(marketGateway)
+        }
+    }
+
+    @Nested
+    inner class UpdateMarketTests {
+
+        @Test
+        fun `should update market by registry code successfully`() = runBlocking {
+            val updatedMarket = MarketFixtureFactory.buildUpdatedMarket()
+            val existingMarket = MarketFixtureFactory.buildMarketWithId()
+            val mergedMarket = existingMarket.update(updatedMarket)
+
+            coEvery { marketGateway.findByRegistryCode(updatedMarket.registryCode) } returns existingMarket
+            coEvery { marketGateway.save(any()) } returns mergedMarket
+
+            val updated = marketService.update(updatedMarket)
+            assertThat(updated).usingRecursiveComparison().isEqualTo(mergedMarket)
+
+            coVerify { marketGateway.findByRegistryCode(updatedMarket.registryCode) }
+            coVerify { marketGateway.save(any()) }
+            confirmVerified(marketGateway)
+        }
+
+        @Test
+        fun `should throw exception when trying to update a market not found by code`() = runBlocking {
+            val market = MarketFixtureFactory.buildMarket()
+
+            coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
+
+            assertThrows<MarketNotFoundException> { marketService.update(market) }
+
+            coVerify { marketGateway.findByRegistryCode(market.registryCode) }
+            coVerify(exactly = 0) { marketGateway.save(market) }
             confirmVerified(marketGateway)
         }
     }

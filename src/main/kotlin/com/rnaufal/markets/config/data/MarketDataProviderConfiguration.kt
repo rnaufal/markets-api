@@ -37,9 +37,9 @@ class MarketDataProviderConfiguration(
 
     internal fun internalLoadMarkets() {
         runBlocking {
-            logger.info { "Deleting all markets from database" }
-
-            marketRepository.deleteAll().awaitFirstOrNull()
+            marketRepository.deleteAll().awaitFirstOrNull().also {
+                logger.info { "All markets from database were deleted" }
+            }
 
             val csvParser = buildCsvParser(marketsDataResource)
             val markets = csvParser.records

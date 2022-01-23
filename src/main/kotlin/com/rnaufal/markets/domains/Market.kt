@@ -33,4 +33,10 @@ data class Market(
     val createdAt: Instant? = Instant.now(),
     @LastModifiedDate
     val updatedAt: Instant? = null
-)
+) {
+
+    fun update(updatedMarket: Market) = updatedMarket.copy(
+        id = this.id,
+        createdAt = this.createdAt
+    )
+}
