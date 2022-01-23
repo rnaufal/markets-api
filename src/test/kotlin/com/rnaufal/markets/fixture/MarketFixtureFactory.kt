@@ -8,7 +8,7 @@ class MarketFixtureFactory {
 
         fun buildMarket() =
             Market(
-                identifier = 1,
+                legacyIdentifier = 1,
                 longitude = -46550164,
                 latitude = -23558733,
                 setCens = 355030885000091,

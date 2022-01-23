@@ -36,7 +36,7 @@ class MarketV1ControllerIntegrationTest(
                 .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
-                .jsonPath("$.identifier").isEqualTo(marketV1Request.identifier)
+                .jsonPath("$.legacyIdentifier").isEqualTo(marketV1Request.legacyIdentifier)
                 .jsonPath("$.longitude").isEqualTo(marketV1Request.longitude)
                 .jsonPath("$.latitude").isEqualTo(marketV1Request.latitude)
                 .jsonPath("$.setCens").isEqualTo(marketV1Request.setCens)
@@ -69,7 +69,7 @@ class MarketV1ControllerIntegrationTest(
                 .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
-                .jsonPath("$.identifier").isEqualTo(marketV1Request.identifier)
+                .jsonPath("$.legacyIdentifier").isEqualTo(marketV1Request.legacyIdentifier)
                 .jsonPath("$.longitude").isEqualTo(marketV1Request.longitude)
                 .jsonPath("$.latitude").isEqualTo(marketV1Request.latitude)
                 .jsonPath("$.setCens").isEqualTo(marketV1Request.setCens)
@@ -104,7 +104,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.errors.length()").isEqualTo(4)
                 .jsonPath("$.errors[*].property").value(
                     containsInAnyOrder(
-                        "identifier",
+                        "legacyIdentifier",
                         "area",
                         "district",
                         "registryCode",

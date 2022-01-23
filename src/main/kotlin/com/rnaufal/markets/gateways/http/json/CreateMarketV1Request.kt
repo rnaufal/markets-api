@@ -8,7 +8,7 @@ import org.valiktor.functions.isPositive
 import org.valiktor.validate
 
 data class CreateMarketV1Request(
-    val identifier: Int,
+    val legacyIdentifier: Int,
     val longitude: Long,
     val latitude: Long,
     val setCens: Long,
@@ -29,7 +29,7 @@ data class CreateMarketV1Request(
 
 fun CreateMarketV1Request.validate() {
     validate(this) {
-        validate(CreateMarketV1Request::identifier).isGreaterThan(0)
+        validate(CreateMarketV1Request::legacyIdentifier).isGreaterThan(0)
         validate(CreateMarketV1Request::longitude).isNotNull()
         validate(CreateMarketV1Request::latitude).isNotNull()
         validate(CreateMarketV1Request::setCens).isNotNull()
@@ -50,7 +50,7 @@ fun CreateMarketV1Request.validate() {
 
 fun CreateMarketV1Request.toModel(): Market {
     return Market(
-        identifier = identifier,
+        legacyIdentifier = legacyIdentifier,
         longitude = longitude,
         latitude = latitude,
         setCens = setCens,

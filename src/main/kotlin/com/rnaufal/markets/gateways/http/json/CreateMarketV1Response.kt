@@ -4,7 +4,7 @@ import com.rnaufal.markets.domains.Market
 
 data class CreateMarketV1Response(
     val id: String?,
-    val identifier: Int,
+    val legacyIdentifier: Int,
     val longitude: Long,
     val latitude: Long,
     val setCens: Long,
@@ -26,7 +26,7 @@ data class CreateMarketV1Response(
 fun Market.toResponse(): CreateMarketV1Response {
     return CreateMarketV1Response(
         id = id,
-        identifier = identifier,
+        legacyIdentifier = legacyIdentifier,
         longitude = longitude,
         latitude = latitude,
         setCens = setCens,

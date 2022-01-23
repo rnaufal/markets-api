@@ -7,7 +7,7 @@ class MarketV1RequestFixtureFactory {
     companion object {
         fun buildSuccessfulRequest() =
             CreateMarketV1Request(
-                identifier = 1,
+                legacyIdentifier = 1,
                 longitude = -46550164,
                 latitude = -23558733,
                 setCens = 355030885000091,
@@ -31,7 +31,7 @@ class MarketV1RequestFixtureFactory {
 
         fun buildInvalidRequest(): CreateMarketV1Request {
             return buildSuccessfulRequest().copy(
-                identifier = -35,
+                legacyIdentifier = -35,
                 area = -50,
                 district = "",
                 registryCode = "",

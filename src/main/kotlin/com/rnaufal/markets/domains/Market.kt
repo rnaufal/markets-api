@@ -11,7 +11,7 @@ import java.time.Instant
 data class Market(
     @Id
     val id: String? = null,
-    val identifier: Int,
+    val legacyIdentifier: Int,
     val longitude: Long,
     val latitude: Long,
     val setCens: Long,

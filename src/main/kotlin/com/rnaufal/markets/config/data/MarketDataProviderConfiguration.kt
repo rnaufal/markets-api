@@ -44,7 +44,7 @@ class MarketDataProviderConfiguration(
             val csvParser = buildCsvParser(marketsDataResource)
             val markets = csvParser.records
                 .map {
-                    val identifier = it["ID"].toInt()
+                    val legacyIdentifier = it["ID"].toInt()
                     val longitude = it["LONG"].toLong()
                     val latitude = it["LAT"].toLong()
                     val setCens = it["SETCENS"].toLong()
@@ -65,7 +65,7 @@ class MarketDataProviderConfiguration(
                         else -> null
                     }
                     Market(
-                        identifier = identifier,
+                        legacyIdentifier = legacyIdentifier,
                         longitude = longitude,
                         latitude = latitude,
                         setCens = setCens,
