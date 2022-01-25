@@ -1,9 +1,6 @@
 name: CI
 
-# Controls when the workflow will run
 on:
-  schedule:
-    - cron: '0 * * * *'
   push:
     branches: [ master ]
 
