@@ -36,7 +36,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1.27
         if: always()
         with:
-          files: reports/**/*.xml
+          files: build/reports/**/*.xml
         
       - name: jacoco-badge-generator
         uses: cicirello/jacoco-badge-generator@v2.5.0
