@@ -18,6 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         
+      - name: Setup JDK 17
+        uses: actions/setup-java@v2.5.0
+        with:
+          java-version: '17'
+      
+        
       - name: Setup Kotlin
         uses: fwilhe2/setup-kotlin@main
         with:
