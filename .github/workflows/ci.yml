@@ -57,4 +57,7 @@ jobs:
         with:
           name: jacoco-report
           path: build/reports/jacoco/test/
+          
+      - name: Build image
+        run: ./gradlew jibDockerBuild --image=markets-api
       
