@@ -5,6 +5,7 @@ plugins {
     id("org.jmailen.kotlinter") version "3.8.0"
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
+    id("com.google.cloud.tools.jib") version "3.2.0"
 }
 
 group = "com.rnaufal.markets"
@@ -51,6 +52,13 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+    }
+}
+
+jib {
+    container {
+        jvmFlags = listOf("-Dfile.encoding=UTF-8")
+        ports = listOf("8080")
     }
 }
 
