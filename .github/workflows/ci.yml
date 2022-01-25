@@ -23,7 +23,6 @@ jobs:
         with:
           java-version: '17'
       
-        
       - name: Setup Kotlin
         uses: fwilhe2/setup-kotlin@main
         with:
