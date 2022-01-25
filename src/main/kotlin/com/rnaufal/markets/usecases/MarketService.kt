@@ -1,9 +1,11 @@
 package com.rnaufal.markets.usecases
 
 import com.rnaufal.markets.domains.Market
+import com.rnaufal.markets.domains.SearchMarketParameters
 import com.rnaufal.markets.exceptions.MarketNotFoundException
 import com.rnaufal.markets.gateways.MarketGateway
 import mu.KotlinLogging
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -43,6 +45,14 @@ class MarketService(private val marketGateway: MarketGateway) {
             }.also {
                 logger.info { "Market $it was updated" }
             }
+
+    suspend fun search(
+        searchMarketParameters: SearchMarketParameters,
+        pageable: Pageable
+    ) = marketGateway.search(searchMarketParameters, pageable)
+        .also {
+            logger.info { "Market search result for $searchMarketParameters found ${it.totalElements} markets" }
+        }
 
     private suspend fun getByRegistryCode(code: String) =
         marketGateway.findByRegistryCode(code) ?: throw MarketNotFoundException(

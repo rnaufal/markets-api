@@ -41,29 +41,26 @@ fun UpdateMarketV1Request.validate() {
         validate(UpdateMarketV1Request::secondZone).isNotEmpty()
         validate(UpdateMarketV1Request::name).isNotEmpty()
         validate(UpdateMarketV1Request::publicArea).isNotEmpty()
-        validate(UpdateMarketV1Request::number).isNotEmpty()
         validate(UpdateMarketV1Request::neighborhood).isNotEmpty()
     }
 }
 
-fun UpdateMarketV1Request.toModel(registryCode: String): Market {
-    return Market(
-        legacyIdentifier = legacyIdentifier,
-        longitude = longitude,
-        latitude = latitude,
-        setCens = setCens,
-        area = area,
-        districtCode = districtCode,
-        district = district,
-        townCode = townCode,
-        town = town,
-        firstZone = firstZone,
-        secondZone = secondZone,
-        name = name,
-        registryCode = registryCode,
-        publicArea = publicArea,
-        number = number,
-        neighborhood = neighborhood,
-        reference = reference,
-    )
-}
+fun UpdateMarketV1Request.toModel(registryCode: String) = Market(
+    legacyIdentifier = legacyIdentifier,
+    longitude = longitude,
+    latitude = latitude,
+    setCens = setCens,
+    area = area,
+    districtCode = districtCode,
+    district = district,
+    townCode = townCode,
+    town = town,
+    firstZone = firstZone,
+    secondZone = secondZone,
+    name = name,
+    registryCode = registryCode,
+    publicArea = publicArea,
+    number = number,
+    neighborhood = neighborhood,
+    reference = reference,
+)

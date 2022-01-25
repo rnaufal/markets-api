@@ -1,14 +1,19 @@
 package com.rnaufal.markets.gateways.http.controllers
 
 import com.rnaufal.markets.gateways.http.json.CreateMarketV1Request
+import com.rnaufal.markets.gateways.http.json.SearchMarketV1Request
 import com.rnaufal.markets.gateways.http.json.UpdateMarketV1Request
 import com.rnaufal.markets.gateways.http.json.toModel
 import com.rnaufal.markets.gateways.http.json.toResponse
+import com.rnaufal.markets.gateways.http.json.toSearchParameters
 import com.rnaufal.markets.gateways.http.json.validate
 import com.rnaufal.markets.usecases.MarketService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -102,4 +107,15 @@ class MarketV1Controller(private val marketService: MarketService) {
     ) = updateMarketV1Request.validate()
         .run { marketService.update(updateMarketV1Request.toModel(registryCode)) }
         .toResponse()
+
+    @GetMapping
+    @Operation(tags = ["Markets"], summary = "Search markets by criteria")
+    @ApiResponse(responseCode = "200")
+    @ResponseStatus(HttpStatus.OK)
+    suspend fun search(
+        searchMarketV1Request: SearchMarketV1Request,
+        @Parameter(hidden = true) @PageableDefault pageable: Pageable
+    ) = searchMarketV1Request.toSearchParameters()
+        .run { marketService.search(this, pageable) }
+        .map { it.toResponse() }
 }

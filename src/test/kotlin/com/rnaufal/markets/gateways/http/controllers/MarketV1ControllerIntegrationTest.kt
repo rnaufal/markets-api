@@ -2,9 +2,11 @@ package com.rnaufal.markets.gateways.http.controllers
 
 import com.rnaufal.markets.IntegrationTests
 import com.rnaufal.markets.fixture.CreateMarketV1RequestFactory
-import com.rnaufal.markets.fixture.MarketFixtureFactory
+import com.rnaufal.markets.fixture.MarketFactory
+import com.rnaufal.markets.fixture.SearchMarketV1RequestFactory
 import com.rnaufal.markets.fixture.UpdateMarketV1RequestFactory
 import com.rnaufal.markets.gateways.repositories.MarketRepository
+import kotlinx.coroutines.reactive.awaitFirstOrElse
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -127,7 +129,7 @@ class MarketV1ControllerIntegrationTest(
 
         @Test
         fun `should delete market successfully`(): Unit = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
 
             marketRepository.save(market).awaitFirstOrNull()
 
@@ -157,10 +159,9 @@ class MarketV1ControllerIntegrationTest(
 
         @Test
         fun `should find market by id successfully`(): Unit = runBlocking {
-
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
                 .run { marketRepository.save(this) }
-                .awaitFirstOrNull()
+                .awaitFirstOrElse { throw RuntimeException("Error saving market") }
 
             webTestClient.get()
                 .uri("/api/v1/markets/${market?.id}")
@@ -170,23 +171,23 @@ class MarketV1ControllerIntegrationTest(
                 .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
-                .jsonPath("$.legacyIdentifier").isEqualTo(MarketFixtureFactory.buildMarket().legacyIdentifier)
-                .jsonPath("$.longitude").isEqualTo(MarketFixtureFactory.buildMarket().longitude)
-                .jsonPath("$.latitude").isEqualTo(MarketFixtureFactory.buildMarket().latitude)
-                .jsonPath("$.setCens").isEqualTo(MarketFixtureFactory.buildMarket().setCens)
-                .jsonPath("$.area").isEqualTo(MarketFixtureFactory.buildMarket().area)
-                .jsonPath("$.districtCode").isEqualTo(MarketFixtureFactory.buildMarket().districtCode)
-                .jsonPath("$.district").isEqualTo(MarketFixtureFactory.buildMarket().district)
-                .jsonPath("$.townCode").isEqualTo(MarketFixtureFactory.buildMarket().townCode)
-                .jsonPath("$.town").isEqualTo(MarketFixtureFactory.buildMarket().town)
-                .jsonPath("$.firstZone").isEqualTo(MarketFixtureFactory.buildMarket().firstZone)
-                .jsonPath("$.secondZone").isEqualTo(MarketFixtureFactory.buildMarket().secondZone)
-                .jsonPath("$.name").isEqualTo(MarketFixtureFactory.buildMarket().name)
-                .jsonPath("$.registryCode").isEqualTo(MarketFixtureFactory.buildMarket().registryCode)
-                .jsonPath("$.publicArea").isEqualTo(MarketFixtureFactory.buildMarket().publicArea)
-                .jsonPath("$.number").isEqualTo(MarketFixtureFactory.buildMarket().number)
-                .jsonPath("$.neighborhood").isEqualTo(MarketFixtureFactory.buildMarket().neighborhood)
-                .jsonPath("$.reference").isEqualTo(MarketFixtureFactory.buildMarket().reference!!)
+                .jsonPath("$.legacyIdentifier").isEqualTo(market.legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(market.longitude)
+                .jsonPath("$.latitude").isEqualTo(market.latitude)
+                .jsonPath("$.setCens").isEqualTo(market.setCens)
+                .jsonPath("$.area").isEqualTo(market.area)
+                .jsonPath("$.districtCode").isEqualTo(market.districtCode)
+                .jsonPath("$.district").isEqualTo(market.district)
+                .jsonPath("$.townCode").isEqualTo(market.townCode)
+                .jsonPath("$.town").isEqualTo(market.town)
+                .jsonPath("$.firstZone").isEqualTo(market.firstZone)
+                .jsonPath("$.secondZone").isEqualTo(market.secondZone)
+                .jsonPath("$.name").isEqualTo(market.name)
+                .jsonPath("$.registryCode").isEqualTo(market.registryCode)
+                .jsonPath("$.publicArea").isEqualTo(market.publicArea)
+                .jsonPath("$.number").isEqualTo(market.number)
+                .jsonPath("$.neighborhood").isEqualTo(market.neighborhood)
+                .jsonPath("$.reference").isEqualTo(market.reference!!)
         }
     }
 
@@ -195,7 +196,7 @@ class MarketV1ControllerIntegrationTest(
 
         @Test
         fun `should update market successfully`(): Unit = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
                 .run { marketRepository.save(this) }
                 .awaitFirstOrNull()
 
@@ -244,6 +245,146 @@ class MarketV1ControllerIntegrationTest(
                 .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .expectBody()
                 .jsonPath("$.message").isNotEmpty
+        }
+    }
+
+    @Nested
+    inner class SearchMarketScenarios {
+
+        @Test
+        fun `should search market by all criteria successfully`(): Unit = runBlocking {
+            val market = MarketFactory.buildMarket()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrElse { throw RuntimeException("Error saving market") }
+
+            val searchMarketV1Request = SearchMarketV1RequestFactory.buildCompleteSearchRequest()
+
+            val uri = """
+                |/api/v1/markets?district=${searchMarketV1Request.district}
+                |&firstZone=${searchMarketV1Request.firstZone}
+                |&name=${searchMarketV1Request.name}
+                |&neighborhood=${searchMarketV1Request.neighborhood}
+            """.trimMargin().replace("\n", "")
+
+            webTestClient.get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.content[0].id").isNotEmpty
+                .jsonPath("$.content[0].legacyIdentifier").isEqualTo(market.legacyIdentifier)
+                .jsonPath("$.content[0].longitude").isEqualTo(market.longitude)
+                .jsonPath("$.content[0].latitude").isEqualTo(market.latitude)
+                .jsonPath("$.content[0].setCens").isEqualTo(market.setCens)
+                .jsonPath("$.content[0].area").isEqualTo(market.area)
+                .jsonPath("$.content[0].districtCode").isEqualTo(market.districtCode)
+                .jsonPath("$.content[0].district").isEqualTo(market.district)
+                .jsonPath("$.content[0].townCode").isEqualTo(market.townCode)
+                .jsonPath("$.content[0].town").isEqualTo(market.town)
+                .jsonPath("$.content[0].firstZone").isEqualTo(market.firstZone)
+                .jsonPath("$.content[0].secondZone").isEqualTo(market.secondZone)
+                .jsonPath("$.content[0].name").isEqualTo(market.name)
+                .jsonPath("$.content[0].registryCode").isEqualTo(market.registryCode)
+                .jsonPath("$.content[0].publicArea").isEqualTo(market.publicArea)
+                .jsonPath("$.content[0].number").isEqualTo(market.number)
+                .jsonPath("$.content[0].neighborhood").isEqualTo(market.neighborhood)
+                .jsonPath("$.content[0].reference").isEqualTo(market.reference!!)
+                .jsonPath("$.totalPages").isEqualTo(1)
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.numberOfElements").isEqualTo(1)
+        }
+
+        @Test
+        fun `should search market by name criteria with pagination`(): Unit = runBlocking {
+            val firstMarket = MarketFactory.buildMarket()
+            val secondMarket = MarketFactory.buildUpdatedMarketChangingRegistryCode()
+            marketRepository.saveAll(listOf(firstMarket, secondMarket)).awaitFirstOrNull()
+
+            val searchMarketV1Request = SearchMarketV1RequestFactory.buildCompleteSearchRequest()
+
+            webTestClient.get()
+                .uri("/api/v1/markets?firstZone=${searchMarketV1Request.firstZone}&page=2&size=1")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.content[0].id").isNotEmpty
+                .jsonPath("$.content[0].legacyIdentifier").isEqualTo(secondMarket.legacyIdentifier)
+                .jsonPath("$.content[0].longitude").isEqualTo(secondMarket.longitude)
+                .jsonPath("$.content[0].latitude").isEqualTo(secondMarket.latitude)
+                .jsonPath("$.content[0].setCens").isEqualTo(secondMarket.setCens)
+                .jsonPath("$.content[0].area").isEqualTo(secondMarket.area)
+                .jsonPath("$.content[0].districtCode").isEqualTo(secondMarket.districtCode)
+                .jsonPath("$.content[0].district").isEqualTo(secondMarket.district)
+                .jsonPath("$.content[0].townCode").isEqualTo(secondMarket.townCode)
+                .jsonPath("$.content[0].town").isEqualTo(secondMarket.town)
+                .jsonPath("$.content[0].firstZone").isEqualTo(secondMarket.firstZone)
+                .jsonPath("$.content[0].secondZone").isEqualTo(secondMarket.secondZone)
+                .jsonPath("$.content[0].name").isEqualTo(secondMarket.name)
+                .jsonPath("$.content[0].registryCode").isEqualTo(secondMarket.registryCode)
+                .jsonPath("$.content[0].publicArea").isEqualTo(secondMarket.publicArea)
+                .jsonPath("$.content[0].number").isEqualTo(secondMarket.number)
+                .jsonPath("$.content[0].neighborhood").isEqualTo(secondMarket.neighborhood)
+                .jsonPath("$.content[0].reference").isEqualTo(secondMarket.reference!!)
+                .jsonPath("$.totalPages").isEqualTo(2)
+                .jsonPath("$.totalElements").isEqualTo(2)
+                .jsonPath("$.numberOfElements").isEqualTo(1)
+        }
+
+        @Test
+        fun `should return no search result when there are no markets`(): Unit = runBlocking {
+            val searchMarketV1Request = SearchMarketV1RequestFactory.buildCompleteSearchRequest()
+
+            webTestClient.get()
+                .uri("/api/v1/markets?firstZone=${searchMarketV1Request.firstZone}&page=2&size=1")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.content.length()").isEqualTo(0)
+                .jsonPath("$.totalPages").isEqualTo(0)
+                .jsonPath("$.totalElements").isEqualTo(0)
+                .jsonPath("$.numberOfElements").isEqualTo(0)
+        }
+
+        @Test
+        fun `should search all markets`(): Unit = runBlocking {
+            val market = MarketFactory.buildUpdatedMarketWithSameRegistryCode()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrElse { throw RuntimeException("Error saving market") }
+
+            webTestClient.get()
+                .uri("/api/v1/markets")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.content[0].id").isNotEmpty
+                .jsonPath("$.content[0].legacyIdentifier").isEqualTo(market.legacyIdentifier)
+                .jsonPath("$.content[0].longitude").isEqualTo(market.longitude)
+                .jsonPath("$.content[0].latitude").isEqualTo(market.latitude)
+                .jsonPath("$.content[0].setCens").isEqualTo(market.setCens)
+                .jsonPath("$.content[0].area").isEqualTo(market.area)
+                .jsonPath("$.content[0].districtCode").isEqualTo(market.districtCode)
+                .jsonPath("$.content[0].district").isEqualTo(market.district)
+                .jsonPath("$.content[0].townCode").isEqualTo(market.townCode)
+                .jsonPath("$.content[0].town").isEqualTo(market.town)
+                .jsonPath("$.content[0].firstZone").isEqualTo(market.firstZone)
+                .jsonPath("$.content[0].secondZone").isEqualTo(market.secondZone)
+                .jsonPath("$.content[0].name").isEqualTo(market.name)
+                .jsonPath("$.content[0].registryCode").isEqualTo(market.registryCode)
+                .jsonPath("$.content[0].publicArea").isEqualTo(market.publicArea)
+                .jsonPath("$.content[0].number").isEqualTo(market.number)
+                .jsonPath("$.content[0].neighborhood").isEqualTo(market.neighborhood)
+                .jsonPath("$.content[0].reference").isEqualTo(market.reference!!)
+                .jsonPath("$.totalPages").isEqualTo(1)
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.numberOfElements").isEqualTo(1)
         }
     }
 }

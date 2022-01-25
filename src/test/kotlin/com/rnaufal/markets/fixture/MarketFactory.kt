@@ -3,7 +3,7 @@ package com.rnaufal.markets.fixture
 import com.rnaufal.markets.domains.Market
 import java.util.UUID
 
-class MarketFixtureFactory {
+class MarketFactory {
 
     companion object {
 
@@ -31,7 +31,7 @@ class MarketFixtureFactory {
         fun buildMarketWithId() =
             buildMarket().copy(id = UUID.randomUUID().toString())
 
-        fun buildUpdatedMarket() = buildMarket().copy(
+        fun buildUpdatedMarketWithSameRegistryCode() = buildMarket().copy(
             legacyIdentifier = 4,
             longitude = -46513450,
             latitude = -23520880,
@@ -48,6 +48,10 @@ class MarketFixtureFactory {
             number = "13.000000",
             neighborhood = "VL NOVA GRANADA",
             reference = "RUA OLIVIA DE OLIVEIRA"
+        )
+
+        fun buildUpdatedMarketChangingRegistryCode() = buildUpdatedMarketWithSameRegistryCode().copy(
+            registryCode = "4567-2"
         )
     }
 }

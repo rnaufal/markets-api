@@ -2,7 +2,8 @@ package com.rnaufal.markets.usecases
 
 import com.rnaufal.markets.domains.Market
 import com.rnaufal.markets.exceptions.MarketNotFoundException
-import com.rnaufal.markets.fixture.MarketFixtureFactory
+import com.rnaufal.markets.fixture.MarketFactory
+import com.rnaufal.markets.fixture.SearchParametersFactory
 import com.rnaufal.markets.gateways.MarketGateway
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 
 @ExtendWith(MockKExtension::class)
 class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
@@ -27,7 +30,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should create new market with success`() = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
             coEvery { marketGateway.save(market) } returns market
@@ -42,7 +45,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should return existing market`() = runBlocking {
-            val expected = MarketFixtureFactory.buildMarket()
+            val expected = MarketFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(expected.registryCode) } returns expected
 
@@ -60,7 +63,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should delete existing market with success`() = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
 
             val marketDeletionSlot = slot<Market>()
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns market
@@ -78,7 +81,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should throw exception when trying to delete a market not found by registry code`() = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
 
@@ -95,7 +98,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should find market by id successfully`() = runBlocking {
-            val market = MarketFixtureFactory.buildMarketWithId()
+            val market = MarketFactory.buildMarketWithId()
 
             coEvery { marketGateway.findById(market.id.toString()) } returns market
 
@@ -125,8 +128,8 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should update market by registry code successfully`() = runBlocking {
-            val updatedMarket = MarketFixtureFactory.buildUpdatedMarket()
-            val existingMarket = MarketFixtureFactory.buildMarketWithId()
+            val updatedMarket = MarketFactory.buildUpdatedMarketWithSameRegistryCode()
+            val existingMarket = MarketFactory.buildMarketWithId()
             val mergedMarket = existingMarket.update(updatedMarket)
 
             coEvery { marketGateway.findByRegistryCode(updatedMarket.registryCode) } returns existingMarket
@@ -142,7 +145,7 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
         @Test
         fun `should throw exception when trying to update a market not found by code`() = runBlocking {
-            val market = MarketFixtureFactory.buildMarket()
+            val market = MarketFactory.buildMarket()
 
             coEvery { marketGateway.findByRegistryCode(market.registryCode) } returns null
 
@@ -150,6 +153,44 @@ class MarketServiceTest(@MockK private val marketGateway: MarketGateway) {
 
             coVerify { marketGateway.findByRegistryCode(market.registryCode) }
             coVerify(exactly = 0) { marketGateway.save(market) }
+            confirmVerified(marketGateway)
+        }
+    }
+
+    @Nested
+    inner class SearchMarketTests {
+
+        @Test
+        fun `should search market by criteria`() = runBlocking {
+            val market = MarketFactory.buildMarketWithId()
+            val searchParameters = SearchParametersFactory.buildSearchParametersWithoutFirstZone()
+            val pageable = PageRequest.of(0, 1)
+
+            coEvery {
+                marketGateway.search(
+                    searchParameters,
+                    pageable
+                )
+            } returns PageImpl(listOf(market))
+
+            val pageResults = marketService.search(
+                searchParameters,
+                pageable
+            )
+
+            assertThat(pageResults.totalElements).isEqualTo(1)
+            assertThat(pageResults.totalPages).isEqualTo(1)
+            assertThat(pageResults.numberOfElements).isEqualTo(1)
+            assertThat(pageResults.size).isEqualTo(1)
+            assertThat(pageResults.content.size).isEqualTo(1)
+            assertThat(pageResults.content[0]).usingRecursiveComparison().isEqualTo(market)
+
+            coVerify {
+                marketGateway.search(
+                    searchParameters,
+                    pageable
+                )
+            }
             confirmVerified(marketGateway)
         }
     }
