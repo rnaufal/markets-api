@@ -3,7 +3,7 @@ spring:
     name: markets-api
   data:
     mongodb:
-      uri: mongodb://markets:markets@localhost:27017/marketsDB?authSource=admin&retryWrites=true&w=majority
+      uri: mongodb://markets:markets@${MONGODB_HOST:localhost}:27017/marketsDB?authSource=admin&retryWrites=true&w=majority
       auto-index-creation: true
       database: marketsDB
 
@@ -21,7 +21,7 @@ management:
         liveness:
           include: livenessState,ping
         readiness:
-          include: readinessState
+          include: readinessState,mongo
 
 server:
   port: 8080

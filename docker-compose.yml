@@ -1,4 +1,5 @@
-version: '3.7'
+version: '3.9'
+
 services:
   mongodb:
     image: mongo:latest
@@ -8,3 +9,20 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: markets
     ports:
       - "27017:27017"
+    networks:
+      - markets-api-network
+
+  markets-api:
+    image: markets-api
+    environment:
+      MONGODB_HOST: mongodb
+    ports:
+      - "8080:8080"
+    networks:
+      - markets-api-network
+    depends_on:
+      - mongodb
+
+networks:
+  markets-api-network:
+    driver: bridge
