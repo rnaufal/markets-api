@@ -1,0 +1,27 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  schedule:
+    - cron: '0 * * * *'
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v2.4.0
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@main
+        with:
+          version: 1.6.10
+      - name: Gradle Build Action
+        uses: gradle/gradle-build-action@v2.1.1
+      
+      
