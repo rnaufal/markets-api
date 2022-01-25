@@ -26,6 +26,9 @@ jobs:
       - name: Gradle Build Action
         uses: gradle/gradle-build-action@v2.1.1
         
+      - name: setup-docker
+        uses: docker-practice/actions-setup-docker@1.0.8
+        
       - name: Execute Gradle build
         run: ./gradlew build
         
