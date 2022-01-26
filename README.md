@@ -7,8 +7,8 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 
 # Requirements
 * [Java 17](https://openjdk.java.net/projects/jdk/17/) for building the application locally with [Gradle](https://gradle.org).
-* [Docker](https://www.docker.com) installed and running as daemon.
-* [DockerCompose](https://github.com/docker/compose) to build the application and its dependencies as containers.
+* [Docker](https://www.docker.com) should be installed and running as daemon.
+* [DockerCompose](https://github.com/docker/compose) should be installed to build the application and its dependencies as containers.
 
 # Technologies
 
