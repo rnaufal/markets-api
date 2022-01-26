@@ -37,57 +37,58 @@ class MarketDataProviderConfiguration(
 
     internal fun internalLoadMarkets() {
         runBlocking {
-            marketRepository.deleteAll().awaitFirstOrNull().also {
-                logger.info { "All markets from database were deleted" }
-            }
+            marketRepository.count()
+                .awaitFirstOrNull()
+                .takeIf { it == 0L }
+                ?.run {
+                    val csvParser = buildCsvParser(marketsDataResource)
+                    val markets = csvParser.records
+                        .map {
+                            val legacyIdentifier = it["ID"].toInt()
+                            val longitude = it["LONG"].toLong()
+                            val latitude = it["LAT"].toLong()
+                            val setCens = it["SETCENS"].toLong()
+                            val area = it["AREAP"].toLong()
+                            val districtCode = it["CODDIST"].toInt()
+                            val district = it["DISTRITO"].toString()
+                            val townCode = it["CODSUBPREF"].toInt()
+                            val town = it["SUBPREFE"].toString()
+                            val firstZone = it["REGIAO5"].toString()
+                            val secondZone = it["REGIAO8"].toString()
+                            val marketName = it["NOME_FEIRA"].toString()
+                            val registryCode = it["REGISTRO"].toString()
+                            val publicArea = it["LOGRADOURO"].toString()
+                            val number = it["NUMERO"].toString()
+                            val neighborhood = it["BAIRRO"].toString()
+                            val reference = when {
+                                it.isSet("REFERENCIA") -> it["REFERENCIA"].toString()
+                                else -> null
+                            }
+                            Market(
+                                legacyIdentifier = legacyIdentifier,
+                                longitude = longitude,
+                                latitude = latitude,
+                                setCens = setCens,
+                                area = area,
+                                districtCode = districtCode,
+                                district = district,
+                                townCode = townCode,
+                                town = town,
+                                firstZone = firstZone,
+                                secondZone = secondZone,
+                                name = marketName,
+                                registryCode = registryCode,
+                                publicArea = publicArea,
+                                number = number,
+                                neighborhood = neighborhood,
+                                reference = reference
+                            )
+                        }
 
-            val csvParser = buildCsvParser(marketsDataResource)
-            val markets = csvParser.records
-                .map {
-                    val legacyIdentifier = it["ID"].toInt()
-                    val longitude = it["LONG"].toLong()
-                    val latitude = it["LAT"].toLong()
-                    val setCens = it["SETCENS"].toLong()
-                    val area = it["AREAP"].toLong()
-                    val districtCode = it["CODDIST"].toInt()
-                    val district = it["DISTRITO"].toString()
-                    val townCode = it["CODSUBPREF"].toInt()
-                    val town = it["SUBPREFE"].toString()
-                    val firstZone = it["REGIAO5"].toString()
-                    val secondZone = it["REGIAO8"].toString()
-                    val marketName = it["NOME_FEIRA"].toString()
-                    val registryCode = it["REGISTRO"].toString()
-                    val publicArea = it["LOGRADOURO"].toString()
-                    val number = it["NUMERO"].toString()
-                    val neighborhood = it["BAIRRO"].toString()
-                    val reference = when {
-                        it.isSet("REFERENCIA") -> it["REFERENCIA"].toString()
-                        else -> null
+                    marketRepository.saveAll(markets).awaitFirstOrNull().also {
+                        logger.info { "Successfully loaded ${markets.size} markets into database" }
                     }
-                    Market(
-                        legacyIdentifier = legacyIdentifier,
-                        longitude = longitude,
-                        latitude = latitude,
-                        setCens = setCens,
-                        area = area,
-                        districtCode = districtCode,
-                        district = district,
-                        townCode = townCode,
-                        town = town,
-                        firstZone = firstZone,
-                        secondZone = secondZone,
-                        name = marketName,
-                        registryCode = registryCode,
-                        publicArea = publicArea,
-                        number = number,
-                        neighborhood = neighborhood,
-                        reference = reference
-                    )
-                }
-
-            marketRepository.saveAll(markets).awaitFirstOrNull().also {
-                logger.info { "Successfully loaded ${markets.size} markets into database" }
-            }
+                } ?: logger.info { "Markets data were already loaded" }
         }
     }
 
