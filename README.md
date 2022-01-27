@@ -54,10 +54,10 @@ GitHub Actions is used to set up the environment (JD K17, Kotlin, Docker), build
 
 [Here](https://github.com/rnaufal/markets-api/blob/master/.github/workflows/ci.yml) is the workflow file used to compile, build, test and deploy the application. [Here](https://github.com/rnaufal/markets-api/runs/4959470787?check_suite_focus=true) is an example of some workflow run to build the application. And [here](https://github.com/rnaufal/markets-api/actions) is all the workflow runs which continuosly build the application. 
 
-Each workflow build run produces the following outputs:
+Each workflow run produces the following outputs:
 
-1. Test results  [Example](https://github.com/rnaufal/markets-api/runs/4959489623?check_suite_focus=true)
-2. JaCoCO report [Example](https://github.com/rnaufal/markets-api/suites/5076343453/artifacts/151129187)
+1. Test results - [Example](https://github.com/rnaufal/markets-api/runs/4959489623?check_suite_focus=true)
+2. JaCoCO report - [Example](https://github.com/rnaufal/markets-api/suites/5076343453/artifacts/151129187)
 
 The JaCoCO report can be downloaded as a *zip* file containing the Jacoco test reports.
 
