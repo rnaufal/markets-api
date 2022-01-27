@@ -42,7 +42,7 @@ The application uses a *Makefile* which contains some commands to build, run and
 # Clone the repository
 $ git clone git@github.com:rnaufal/markets-api.git
 
-# Build the application, run unit and integrated tests, build and start the application and MongoDB containers 
+# Build the application, run unit and integration tests, build and start the application and MongoDB containers 
 $ make run
 ```
 
