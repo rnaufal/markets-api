@@ -175,9 +175,9 @@ curl -X 'POST' \
 
 ### Response
 
-```bash
+#### 201 (CREATED)
 
-# 201 (CREATED)
+```bash
 
 {
   "id": "61f4669070f21965b0ee9435",
