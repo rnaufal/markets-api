@@ -145,6 +145,8 @@ The JSON response has the following mapping within the markets dataset:
 
 1. Create a new market with success
 
+### Request
+
 ```bash
 curl -X 'POST' \
   'http://localhost:8080/api/v1/markets' \
@@ -171,9 +173,12 @@ curl -X 'POST' \
 }'
 ```
 
-`Response: 201 (CREATED)`
+### Response
 
 ```bash
+
+# 201 (CREATED)
+
 {
   "id": "61f4669070f21965b0ee9435",
   "legacyIdentifier": 2,
@@ -197,6 +202,8 @@ curl -X 'POST' \
 ```
 
 2. Create market request with validation errors
+
+### Request
 
 ```bash
 curl -X 'POST' \
@@ -224,9 +231,12 @@ curl -X 'POST' \
 }'
 ```
 
-`Response: 400 (BAD REQUEST)`
+### Response
 
 ```bash
+
+# 400 (BAD REQUEST)
+
 {
   "errors": [
     {
