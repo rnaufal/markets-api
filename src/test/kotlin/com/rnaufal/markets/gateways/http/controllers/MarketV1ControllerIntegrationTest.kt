@@ -53,7 +53,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.name").isEqualTo(createMarketV1Request.name)
                 .jsonPath("$.registryCode").isEqualTo(createMarketV1Request.registryCode)
                 .jsonPath("$.publicArea").isEqualTo(createMarketV1Request.publicArea)
-                .jsonPath("$.number").isEqualTo(createMarketV1Request.number)
+                .jsonPath("$.number").isEqualTo(createMarketV1Request.number!!)
                 .jsonPath("$.neighborhood").isEqualTo(createMarketV1Request.neighborhood)
                 .jsonPath("$.reference").isEmpty
         }
@@ -86,9 +86,42 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.name").isEqualTo(marketV1Request.name)
                 .jsonPath("$.registryCode").isEqualTo(marketV1Request.registryCode)
                 .jsonPath("$.publicArea").isEqualTo(marketV1Request.publicArea)
-                .jsonPath("$.number").isEqualTo(marketV1Request.number)
+                .jsonPath("$.number").isEqualTo(marketV1Request.number!!)
                 .jsonPath("$.neighborhood").isEqualTo(marketV1Request.neighborhood)
                 .jsonPath("$.reference").isEqualTo(marketV1Request.reference!!)
+        }
+
+        @Test
+        fun `should create market without number successfully`(): Unit = runBlocking {
+            val createMarketV1Request = CreateMarketV1RequestFactory.buildReferenceSuccessfulRequestWithoutNumber()
+
+            webTestClient.post()
+                .uri("/api/v1/markets")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(createMarketV1Request))
+                .exchange()
+                .expectStatus()
+                .isCreated
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+                .jsonPath("$.legacyIdentifier").isEqualTo(createMarketV1Request.legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(createMarketV1Request.longitude)
+                .jsonPath("$.latitude").isEqualTo(createMarketV1Request.latitude)
+                .jsonPath("$.setCens").isEqualTo(createMarketV1Request.setCens)
+                .jsonPath("$.area").isEqualTo(createMarketV1Request.area)
+                .jsonPath("$.districtCode").isEqualTo(createMarketV1Request.districtCode)
+                .jsonPath("$.district").isEqualTo(createMarketV1Request.district)
+                .jsonPath("$.townCode").isEqualTo(createMarketV1Request.townCode)
+                .jsonPath("$.town").isEqualTo(createMarketV1Request.town)
+                .jsonPath("$.firstZone").isEqualTo(createMarketV1Request.firstZone)
+                .jsonPath("$.secondZone").isEqualTo(createMarketV1Request.secondZone)
+                .jsonPath("$.name").isEqualTo(createMarketV1Request.name)
+                .jsonPath("$.registryCode").isEqualTo(createMarketV1Request.registryCode)
+                .jsonPath("$.publicArea").isEqualTo(createMarketV1Request.publicArea)
+                .jsonPath("$.number").isEmpty
+                .jsonPath("$.neighborhood").isEqualTo(createMarketV1Request.neighborhood)
+                .jsonPath("$.reference").isEqualTo(createMarketV1Request.reference!!)
         }
 
         @Test
@@ -185,7 +218,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.name").isEqualTo(market.name)
                 .jsonPath("$.registryCode").isEqualTo(market.registryCode)
                 .jsonPath("$.publicArea").isEqualTo(market.publicArea)
-                .jsonPath("$.number").isEqualTo(market.number)
+                .jsonPath("$.number").isEqualTo(market.number!!)
                 .jsonPath("$.neighborhood").isEqualTo(market.neighborhood)
                 .jsonPath("$.reference").isEqualTo(market.reference!!)
         }
@@ -226,7 +259,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.name").isEqualTo(updateMarketV1Request.name)
                 .jsonPath("$.registryCode").isEqualTo(market?.registryCode!!)
                 .jsonPath("$.publicArea").isEqualTo(updateMarketV1Request.publicArea)
-                .jsonPath("$.number").isEqualTo(updateMarketV1Request.number)
+                .jsonPath("$.number").isEqualTo(updateMarketV1Request.number!!)
                 .jsonPath("$.neighborhood").isEqualTo(updateMarketV1Request.neighborhood)
                 .jsonPath("$.reference").isEqualTo(updateMarketV1Request.reference!!)
         }
@@ -288,7 +321,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.content[0].name").isEqualTo(market.name)
                 .jsonPath("$.content[0].registryCode").isEqualTo(market.registryCode)
                 .jsonPath("$.content[0].publicArea").isEqualTo(market.publicArea)
-                .jsonPath("$.content[0].number").isEqualTo(market.number)
+                .jsonPath("$.content[0].number").isEqualTo(market.number!!)
                 .jsonPath("$.content[0].neighborhood").isEqualTo(market.neighborhood)
                 .jsonPath("$.content[0].reference").isEqualTo(market.reference!!)
                 .jsonPath("$.totalPages").isEqualTo(1)
@@ -326,7 +359,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.content[0].name").isEqualTo(secondMarket.name)
                 .jsonPath("$.content[0].registryCode").isEqualTo(secondMarket.registryCode)
                 .jsonPath("$.content[0].publicArea").isEqualTo(secondMarket.publicArea)
-                .jsonPath("$.content[0].number").isEqualTo(secondMarket.number)
+                .jsonPath("$.content[0].number").isEqualTo(secondMarket.number!!)
                 .jsonPath("$.content[0].neighborhood").isEqualTo(secondMarket.neighborhood)
                 .jsonPath("$.content[0].reference").isEqualTo(secondMarket.reference!!)
                 .jsonPath("$.totalPages").isEqualTo(2)
@@ -379,7 +412,7 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.content[0].name").isEqualTo(market.name)
                 .jsonPath("$.content[0].registryCode").isEqualTo(market.registryCode)
                 .jsonPath("$.content[0].publicArea").isEqualTo(market.publicArea)
-                .jsonPath("$.content[0].number").isEqualTo(market.number)
+                .jsonPath("$.content[0].number").isEqualTo(market.number!!)
                 .jsonPath("$.content[0].neighborhood").isEqualTo(market.neighborhood)
                 .jsonPath("$.content[0].reference").isEqualTo(market.reference!!)
                 .jsonPath("$.totalPages").isEqualTo(1)

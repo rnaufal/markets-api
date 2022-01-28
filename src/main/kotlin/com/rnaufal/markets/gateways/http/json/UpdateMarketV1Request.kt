@@ -21,7 +21,7 @@ data class UpdateMarketV1Request(
     val secondZone: String,
     val name: String,
     val publicArea: String,
-    val number: String,
+    val number: String? = null,
     val neighborhood: String,
     val reference: String? = null,
 )

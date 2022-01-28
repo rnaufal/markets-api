@@ -29,6 +29,10 @@ class CreateMarketV1RequestFactory {
             return buildSuccessfulRequest().copy(reference = "TV RUA PRETORIA")
         }
 
+        fun buildReferenceSuccessfulRequestWithoutNumber(): CreateMarketV1Request {
+            return buildReferenceSuccessfulRequest().copy(number = null)
+        }
+
         fun buildInvalidRequest(): CreateMarketV1Request {
             return buildSuccessfulRequest().copy(
                 legacyIdentifier = -35,

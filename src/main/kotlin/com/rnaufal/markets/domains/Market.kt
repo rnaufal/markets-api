@@ -26,7 +26,7 @@ data class Market(
     @Indexed(unique = true)
     val registryCode: String,
     val publicArea: String,
-    val number: String,
+    val number: String? = null,
     val neighborhood: String,
     val reference: String? = null,
     @CreatedDate

@@ -22,7 +22,7 @@ data class CreateMarketV1Request(
     val name: String,
     val registryCode: String,
     val publicArea: String,
-    val number: String,
+    val number: String? = null,
     val neighborhood: String,
     val reference: String? = null,
 )
