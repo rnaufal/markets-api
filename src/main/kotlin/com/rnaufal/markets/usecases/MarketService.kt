@@ -19,8 +19,8 @@ class MarketService(private val marketGateway: MarketGateway) {
         market: Market
     ): Market {
         return when (val maybeMarket = marketGateway.findByRegistryCode(market.registryCode)) {
-            null -> marketGateway.save(market).also { logger.info { "Market $market created successfully" } }
-            else -> maybeMarket
+            null -> marketGateway.save(market).also { logger.info { "Market $it created successfully" } }
+            else -> maybeMarket.also { logger.info { "Market $it already exists" } }
         }
     }
 
