@@ -6,6 +6,12 @@ class UpdateMarketV1RequestFactory {
 
     companion object {
         fun buildSuccessfulRequest() =
+            buildSuccessfulRequestWithoutNumberAndReference().copy(
+                number = "417.000000",
+                reference = "TV AV DEP EMILIO CARLOS"
+            )
+
+        fun buildSuccessfulRequestWithoutNumberAndReference() =
             UpdateMarketV1Request(
                 legacyIdentifier = 16,
                 longitude = -46674080,
@@ -20,9 +26,7 @@ class UpdateMarketV1RequestFactory {
                 secondZone = "Norte 1",
                 name = "SANTA MARIA",
                 publicArea = "RUA TOMAZ ANTONIO VILANE",
-                number = "417.000000",
                 neighborhood = "VL STA MARIA",
-                reference = "TV AV DEP EMILIO CARLOS"
             )
     }
 }

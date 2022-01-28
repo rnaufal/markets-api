@@ -265,6 +265,43 @@ class MarketV1ControllerIntegrationTest(
         }
 
         @Test
+        fun `should update market removing number and reference successfully`(): Unit = runBlocking {
+            val market = MarketFactory.buildMarket()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrNull()
+
+            val updateMarketV1Request = UpdateMarketV1RequestFactory.buildSuccessfulRequestWithoutNumberAndReference()
+
+            webTestClient.patch()
+                .uri("/api/v1/markets/${market?.registryCode}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(updateMarketV1Request))
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+                .jsonPath("$.legacyIdentifier").isEqualTo(updateMarketV1Request.legacyIdentifier)
+                .jsonPath("$.longitude").isEqualTo(updateMarketV1Request.longitude)
+                .jsonPath("$.latitude").isEqualTo(updateMarketV1Request.latitude)
+                .jsonPath("$.setCens").isEqualTo(updateMarketV1Request.setCens)
+                .jsonPath("$.area").isEqualTo(updateMarketV1Request.area)
+                .jsonPath("$.districtCode").isEqualTo(updateMarketV1Request.districtCode)
+                .jsonPath("$.district").isEqualTo(updateMarketV1Request.district)
+                .jsonPath("$.townCode").isEqualTo(updateMarketV1Request.townCode)
+                .jsonPath("$.town").isEqualTo(updateMarketV1Request.town)
+                .jsonPath("$.firstZone").isEqualTo(updateMarketV1Request.firstZone)
+                .jsonPath("$.secondZone").isEqualTo(updateMarketV1Request.secondZone)
+                .jsonPath("$.name").isEqualTo(updateMarketV1Request.name)
+                .jsonPath("$.registryCode").isEqualTo(market?.registryCode!!)
+                .jsonPath("$.publicArea").isEqualTo(updateMarketV1Request.publicArea)
+                .jsonPath("$.number").isEmpty
+                .jsonPath("$.neighborhood").isEqualTo(updateMarketV1Request.neighborhood)
+                .jsonPath("$.reference").isEmpty
+        }
+
+        @Test
         fun `should return error response when updating market not found`(): Unit = runBlocking {
             val updateMarketV1Request = UpdateMarketV1RequestFactory.buildSuccessfulRequest()
 
