@@ -92,9 +92,10 @@ The application architecture follows the [Clean Architecture](https://blog.clean
 Here are some design decisions that were made in the project:
 
 - MongoDB was chosen as the database because of its *schemaless* architecture and the uncertainty about the markets dataset structure in advance.
-- Some simple validations were applied to the markets dataset (nullable and positive fields).
+- Some simple validations were applied to the markets dataset for validating nullable and positive fields.
 - The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
 - As MongoDB has its own *id* for each document, the markets dataset *ID* field was imported into a specific field called *legacyIdentifier* to keep track of it.
+- The market field named as *REGISTRO* and mapped as *registryCode* in the domain is not updatable and thus is considered unique between the markets. An unique index was created to enforce this rule.
 
 ### JSON API Response
 
