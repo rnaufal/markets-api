@@ -168,7 +168,8 @@ curl -X 'POST' \
   "number": "909.000000",
   "neighborhood": "VL ZELINA",
   "reference": "RUA OLIVEIRA GOUVEIA"
-}'```
+}'
+```
 
 `Response: 201 (CREATED)`
 
@@ -192,7 +193,8 @@ curl -X 'POST' \
   "number": "909.000000",
   "neighborhood": "VL ZELINA",
   "reference": "RUA OLIVEIRA GOUVEIA"
-}```
+}
+```
 
 2. Create market request with validation errors
 
@@ -219,7 +221,8 @@ curl -X 'POST' \
   "number": "13.000000",
   "neighborhood": "VL NOVA GRANADA",
   "reference": "RUA OLIVIA DE OLIVEIRA"
-}'```
+}'
+```
 
 `Response: 400 (BAD REQUEST)`
 
