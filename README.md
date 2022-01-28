@@ -233,9 +233,9 @@ curl -X 'POST' \
 
 ### Response
 
-```bash
+#### 400 (BAD REQUEST)
 
-# 400 (BAD REQUEST)
+```bash
 
 {
   "errors": [
