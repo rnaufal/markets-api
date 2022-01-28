@@ -94,7 +94,7 @@ Here are some design decisions that were made in the project:
 - MongoDB was chosen as the database because of its *schemaless* architecture and the uncertainty about the markets dataset structure in advance.
 - Some simple validations were applied to the markets dataset (nullable and positive fields).
 - The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
-- As MongoDb has its own *id* for each document, the markets dataset *ID* field was considered legacy and it was imported into a specific field called *legacyIdentifier* to keep track of it.
+- As MongoDB has its own *id* for each document, the markets dataset *ID* field was imported into a specific field called *legacyIdentifier* to keep track of it.
 
 ### JSON API Response
 
