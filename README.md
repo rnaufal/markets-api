@@ -31,12 +31,13 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 * [Mockk](https://mockk.io)
 * [AssertJ](https://assertj.github.io/doc)
 * [Valiktor](https://github.com/valiktor/valiktor)
+* [Logback](https://logback.qos.ch/)
 
 ## Makefile
 
-The application uses a *Makefile* which contains some commands to build, run and create the application image.
+The application uses a *Makefile* which contains some commands to build the application, run it and create its image to run on Docker.
 
-## Build and run
+## Building and running the application
 
 ```bash
 # Clone the repository
@@ -48,9 +49,28 @@ $ make run
 
 The application should be up and running at `http://localhost:8080` address.
 
+## Test summary and JaCoCo coverage
+
+The application uses the JaCoCo report coverage tool to measure code coverage. The test summary and JaCoCo report coverage can be found under the project directory at the following paths:
+
+```bash
+{PROJECT_DIR}/build/reports/tests/test/index.html
+{PROJECT_DIR}/build/reports/jacoco/test/html/index.html
+```
+
+where *PROJECT_DIR* is the absolute path in which the repository was cloned.
+
+## Logs
+
+The log file can be found at the following path:
+
+```bash
+/tmp/logs/markets-api/markets-api.log
+```
+
 ## CI/CD
 
-GitHub Actions is used to set up the environment (JD K17, Kotlin, Docker), build, test and create the application image on Docker daemon at every pushed commit on branch *master*. 
+GitHub Actions is used to set up the environment (JDK 17, Kotlin, Docker), build the application, test and create the application image on Docker daemon at every pushed commit on branch *master*. 
 
 [Here](https://github.com/rnaufal/markets-api/blob/master/.github/workflows/ci.yml) is the workflow file used to compile, build, test and deploy the application. [Here](https://github.com/rnaufal/markets-api/runs/4959470787?check_suite_focus=true) is an example of some workflow run to build the application. And [here](https://github.com/rnaufal/markets-api/actions) is all the workflow runs which continuosly build the application. 
 
@@ -95,7 +115,7 @@ Here are some design decisions that were made in the project:
 - Some simple validations were applied to the markets dataset for validating nullable and positive fields.
 - The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
 - As MongoDB has its own *id* for each document, the markets dataset *ID* field was imported into a specific field called *legacyIdentifier* to keep track of it.
-- The market field named as *REGISTRO* and mapped as *registryCode* in the domain is not updatable and thus is considered unique between the markets. An unique index was created to enforce this rule.
+- The market field named as *REGISTRO*, which is mapped as *registryCode* in the domain, is not updatable and thus is considered unique between the markets. An unique index on MongoDB was created to enforce this rule.
 
 ### JSON API Response
 
@@ -120,3 +140,97 @@ The JSON response has the following mapping within the markets dataset:
 | NUMERO | number |
 | BAIRRO | neighborhood |
 | REFERENCIA | reference |
+
+## Examples
+
+1. Create a new market with success
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/markets' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "legacyIdentifier": 2,
+  "longitude": -46574716,
+  "latitude": -23584852,
+  "setCens": 355030893000035,
+  "area": 3550308005042,
+  "districtCode": 95,
+  "district": "VILA PRUDENTE",
+  "townCode": 29,
+  "town": "VILA PRUDENTE",
+  "firstZone": "Leste",
+  "secondZone": "Leste 1",
+  "name": "PRACA SANTA HELENA",
+  "registryCode": "4045-2",
+  "publicArea": "RUA JOSE DOS REIS",
+  "number": "909.000000",
+  "neighborhood": "VL ZELINA",
+  "reference": "RUA OLIVEIRA GOUVEIA"
+}'```
+
+`Response: 201 (CREATED)`
+
+```bash
+{
+  "id": "61f4669070f21965b0ee9435",
+  "legacyIdentifier": 2,
+  "longitude": -46574716,
+  "latitude": -23584852,
+  "setCens": 355030893000035,
+  "area": 3550308005042,
+  "districtCode": 95,
+  "district": "VILA PRUDENTE",
+  "townCode": 29,
+  "town": "VILA PRUDENTE",
+  "firstZone": "Leste",
+  "secondZone": "Leste 1",
+  "name": "PRACA SANTA HELENA",
+  "registryCode": "4045-2",
+  "publicArea": "RUA JOSE DOS REIS",
+  "number": "909.000000",
+  "neighborhood": "VL ZELINA",
+  "reference": "RUA OLIVEIRA GOUVEIA"
+}```
+
+2. Create market request with validation errors
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/markets' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "61f4669070f21965b0ee9437",
+  "legacyIdentifier": 4,
+  "longitude": -46513450,
+  "latitude": -23520880,
+  "setCens": 355030859000173,
+  "area": 3550308005145,
+  "districtCode": 60,
+  "district": "PENHA",
+  "townCode": 21,
+  "town": "PENHA",
+  "firstZone": "Leste",
+  "secondZone": "Leste 1",
+  "name": "VILA NOVA GRANADA",
+  "publicArea": "RUA FRANCISCO DE OLIVEIRA BRAGA",
+  "number": "13.000000",
+  "neighborhood": "VL NOVA GRANADA",
+  "reference": "RUA OLIVIA DE OLIVEIRA"
+}'```
+
+`Response: 400 (BAD REQUEST)`
+
+```bash
+{
+  "errors": [
+    {
+      "property": "registryCode",
+      "value": "null",
+      "errorMessage": "Must not be null"
+    }
+  ]
+}
+```
