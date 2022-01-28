@@ -96,7 +96,7 @@ Here are some design decisions that were made in the project:
 - The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
 - As MongoDB has its own *id* for each document, the markets dataset *ID* field was imported into a specific field called *legacyIdentifier* to keep track of it.
 
-## JSON API Response
+### JSON API Response
 
 The JSON response has the following mapping within the markets dataset:
 
