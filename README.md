@@ -87,9 +87,18 @@ http://localhost:8080/swagger-ui.html
 
 The application architecture follows the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
-### JSON Response
+### Design
 
-The JSON response has the following field mapping from the markets dataset:
+Here are some design decisions that were made in the project:
+
+- MongoDB was chosen as the database because of its *schemaless* architecture and the uncertainty about the markets dataset structure in advance.
+- Some simple validations were applied to the markets dataset (nullable and positive fields).
+- The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
+- As MongoDb has its own *id* for each document, the markets dataset *ID* field was considered legacy and it was imported into a specific field called *legacyIdentifier* to keep track of it.
+
+### JSON API Response
+
+The JSON response has the following mapping within the markets dataset:
 
 | Field | JSON |
 | ------ | ------ |
