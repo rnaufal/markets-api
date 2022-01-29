@@ -5,7 +5,7 @@
 
 Markets-API is a reactive Kotlin microservice for managing markets built with the SpringBoot framework and the MongoDB database.
 
-# Content
+## Content
 
 1. [Requirements](#requirements)
 2. [Technologies](#technologies)
@@ -18,17 +18,28 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 9. [Kubernetes (K8s) probes](#kubernetes-k8s-probes)
 10. [Swagger (API documentation)](#swagger-api-documentation)
 11. [Architecture](#architecture)
-12. [Design](#design)
-13. [JSON API Response](#json-api-response)
-14. [Request and response examples](#request-and-response-examples)
+  - [Design](#design)
+  - [JSON API Response](#json-api-response)
+15. [Request and response examples](#request-and-response-examples)
+  - [Create a new market with success](#create-a-new-market-with-success)
+  - [Create market request with validation errors](#create-market-request-with-validation-errors)
+  - [Delete market by its registry code successfully](#delete-market-by-its-registry-code-successfully)
+  - [Delete market with invalid registry code 1234-5](#delete-market-with-invalid-registry-code-1234-5)
+  - [Get market by its id](#get-market-by-its-id)
+  - [Get market with invalid id 12345](#get-market-with-invalid-id-12345)
+  - [Update market by its registry code 4038-0](#update-market-by-its-registry-code-4038-0)
+  - [Update market with invalid registry code 45678](#update-market-with-invalid-registry-code-45678)
+  - [Search markets by firstZone and district criteria with page, size and sorting parameters](#search-markets-by-firstzone-and-district-criteria-with-page-size-and-sorting-parameters)
+  - [Search markets by invalid values for name and neighborhood parameters producing no market results](#search-markets-by-invalid-values-for-name-and-neighborhood-parameters-producing-no-market-results)
 
-# Requirements
+## Requirements
+
 * [Java 17](https://openjdk.java.net/projects/jdk/17/) for building the application with [Gradle](https://gradle.org).
 * [Docker](https://www.docker.com) should be installed and running as daemon.
 * [DockerCompose](https://github.com/docker/compose) should be installed to build the application and its dependencies as containers.
 * [Make](https://www.gnu.org/software/make/) as a tool to build the application artifacts.
 
-# Technologies
+## Technologies
 
 * [Kotlin](https://kotlinlang.org)
 * [SpringBoot](https://spring.io/projects/spring-boot)
