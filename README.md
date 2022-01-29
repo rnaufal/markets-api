@@ -161,9 +161,9 @@ The JSON response has the following mapping within the markets dataset:
 
 ## Request and response examples
 
-1. [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) a new market with success
+### [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) a new market with success
 
-### Request
+#### Request
 
 ```bash
 curl -X 'POST' \
@@ -191,9 +191,9 @@ curl -X 'POST' \
 }'
 ```
 
-### Response
+#### Response
 
-#### 201 (CREATED)
+##### 201 (CREATED)
 
 ```json
 {
@@ -218,9 +218,9 @@ curl -X 'POST' \
 }
 ```
 
-2. [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) market request with validation errors
+### [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) market request with validation errors
 
-### Request
+#### Request
 
 ```bash
 curl -X 'POST' \
@@ -248,9 +248,9 @@ curl -X 'POST' \
 }'
 ```
 
-### Response
+#### Response
 
-#### 400 (BAD REQUEST)
+##### 400 (BAD REQUEST)
 
 ```json
 {
@@ -264,9 +264,9 @@ curl -X 'POST' \
 }
 ```
 
-3. [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market by its registry code successfully
+### [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market by its registry code successfully
 
-### Request
+#### Request
 
 ```bash
 curl -X 'DELETE' \
@@ -274,13 +274,13 @@ curl -X 'DELETE' \
   -H 'accept: */*'
  ```
 
-### Response
+#### Response
 
-#### 204 (NO CONTENT)
+##### 204 (NO CONTENT)
 
-4. [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market with invalid registry code *1234-5*
+### [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market with invalid registry code *1234-5*
 
-### Request
+#### Request
 
 ```bash
 curl -X 'DELETE' \
@@ -288,9 +288,9 @@ curl -X 'DELETE' \
   -H 'accept: */*'
  ```
  
- ### Response
+#### Response
  
- #### 404 (NOT FOUND)
+##### 404 (NOT FOUND)
  
  ```json
  {
@@ -298,9 +298,9 @@ curl -X 'DELETE' \
  }
  ```
  
- 5. [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market by its id
+### [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market by its id
 
-### Request
+#### Request
 
 ```bash
 curl -X 'GET' \
@@ -308,9 +308,9 @@ curl -X 'GET' \
   -H 'accept: */*'
   ```
   
-### Response
+#### Response
    
-#### 200 (OK)
+##### 200 (OK)
 
 ```json
 {
@@ -335,9 +335,9 @@ curl -X 'GET' \
 }
 ```
 
-6. [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market with invalid id *12345*
+### [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market with invalid id *12345*
 
-### Request
+#### Request
 
 ```bash
 curl -X 'GET' \
@@ -345,9 +345,9 @@ curl -X 'GET' \
   -H 'accept: */*'
   ```
 
-### Response
+#### Response
 
-#### 404 (NOT FOUND)
+##### 404 (NOT FOUND)
 
 ```json
 {
@@ -355,9 +355,9 @@ curl -X 'GET' \
 }
 ```
 
-7. [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market by its registry code *4038-0*
+### [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market by its registry code *4038-0*
 
-### Request
+#### Request
 
 ```bash
 curl -X 'PATCH' \
@@ -385,9 +385,9 @@ curl -X 'PATCH' \
 }'
 ```
 
-### Response
+#### Response
 
-#### 200 (OK)
+##### 200 (OK)
 
 ```json
 {
@@ -412,9 +412,9 @@ curl -X 'PATCH' \
 }
 ```
 
-8. [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market with invalid registry code *45678*
+### [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market with invalid registry code *45678*
 
-### Request
+#### Request
 
 ```bash
 curl -X 'PATCH' \
@@ -442,9 +442,9 @@ curl -X 'PATCH' \
 }'
 ```
 
-### Response
+#### Response
 
-#### 404 (NOT FOUND)
+##### 404 (NOT FOUND)
 
 ```json
 {
@@ -452,9 +452,9 @@ curl -X 'PATCH' \
 }
 ```
 
-8. [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by *firstZone* and *district* criteria with page, size and sorting parameters
+### [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by *firstZone* and *district* criteria with page, size and sorting parameters
 
-### Request
+#### Request
 
 ```bash
 curl -X 'GET' \
@@ -462,9 +462,9 @@ curl -X 'GET' \
   -H 'accept: */*'
 ```
 
-### Response
+#### Response
 
-#### 200 (OK)
+##### 200 (OK)
 
 ```json
 {
@@ -538,9 +538,9 @@ curl -X 'GET' \
 }
 ```
 
-9. [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by invalid values for *name* and *neighborhood* parameters producing no market results
+### [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by invalid values for *name* and *neighborhood* parameters producing no market results
 
-### Request
+#### Request
 
 ```bash
 curl -X 'GET' \
@@ -548,9 +548,9 @@ curl -X 'GET' \
   -H 'accept: */*'
 ```
 
-### Response
+#### Response
 
-#### 200 (OK)
+##### 200 (OK)
 
 ```json
 {
