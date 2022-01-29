@@ -112,7 +112,7 @@ tasks {
     }
 
     check {
-        dependsOn(jacocoTestCoverageVerification)
+        dependsOn(lintKotlin, jacocoTestCoverageVerification)
     }
 
     jibDockerBuild {
