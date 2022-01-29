@@ -451,3 +451,134 @@ curl -X 'PATCH' \
   "message": "Market with code 45678 not found"
 }
 ```
+
+8. [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by *firstZone* and *district* criteria with page, size and sorting parameters
+
+### Request
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/markets?district=JOSE%20BONIFACIO&firstZone=Leste&page=4&size=2&sort=name%2Casc%26sort%3Dneighborhood%2Casc' \
+  -H 'accept: */*'
+```
+
+### Response
+
+#### 200 (OK)
+
+```json
+{
+  "content": [
+    {
+      "id": "61f55a942fb61b56bc19af82",
+      "legacyIdentifier": 827,
+      "longitude": -46436077,
+      "latitude": -23541074,
+      "setCens": 355030847000081,
+      "area": 3550308005261,
+      "districtCode": 46,
+      "district": "JOSE BONIFACIO",
+      "townCode": 27,
+      "town": "ITAQUERA",
+      "firstZone": "Leste",
+      "secondZone": "Leste 2",
+      "name": "ITAQUERA II",
+      "registryCode": "1370-6",
+      "publicArea": "RUA LAURA BOSS",
+      "number": "",
+      "neighborhood": "GUAIANASES",
+      "reference": "COHAB JOSE BONIFACIO"
+    },
+    {
+      "id": "61f55a942fb61b56bc19ac68",
+      "legacyIdentifier": 33,
+      "longitude": -46427138,
+      "latitude": -23537932,
+      "setCens": 355030847000108,
+      "area": 3550308005261,
+      "districtCode": 46,
+      "district": "JOSE BONIFACIO",
+      "townCode": 27,
+      "town": "ITAQUERA",
+      "firstZone": "Leste",
+      "secondZone": "Leste 2",
+      "name": "JARDIM SANTA HELENA",
+      "registryCode": "6056-9",
+      "publicArea": "RUA SANTA EDITH",
+      "number": "357.000000",
+      "neighborhood": "JD STA HELENA",
+      "reference": "GUAIANAZES"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "empty": false,
+      "sorted": true,
+      "unsorted": false
+    },
+    "offset": 6,
+    "pageNumber": 3,
+    "pageSize": 2,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": false,
+  "totalPages": 5,
+  "totalElements": 10,
+  "size": 2,
+  "number": 3,
+  "sort": {
+    "empty": false,
+    "sorted": true,
+    "unsorted": false
+  },
+  "first": false,
+  "numberOfElements": 2,
+  "empty": false
+}
+```
+
+9. [Search](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/search) markets by invalid values for *name* and *neighborhood* parameters producing no market results
+
+### Request
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/markets?name=Teste2&neighborhood=Teste' \
+  -H 'accept: */*'
+```
+
+### Response
+
+#### 200 (OK)
+
+```json
+{
+  "content": [],
+  "pageable": {
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 10,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalPages": 0,
+  "totalElements": 0,
+  "size": 10,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "first": true,
+  "numberOfElements": 0,
+  "empty": true
+}
+```
