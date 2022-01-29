@@ -112,6 +112,7 @@ The application architecture follows the [Clean Architecture](https://blog.clean
 Here are some design decisions that were made in the project:
 
 - MongoDB was chosen as the database because of its *schemaless* architecture and the uncertainty about the markets dataset structure in advance.
+- The dataset file *DEINFO_AB_FEIRASLIVRES_2014.csv* is loaded once on the application startup.
 - Some simple validations were applied to the markets dataset for validating nullable and positive fields.
 - The *number* and *reference* fields were not validated because they could be nullable according to the dataset. 
 - As MongoDB has its own *id* for each document, the markets dataset *ID* field was imported into a specific field called *legacyIdentifier* to keep track of it.
@@ -141,9 +142,9 @@ The JSON response has the following mapping within the markets dataset:
 | BAIRRO | neighborhood |
 | REFERENCIA | reference |
 
-## Examples
+## Request and response examples
 
-1. Create a new market with success
+1. [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) a new market with success
 
 ### Request
 
@@ -200,7 +201,7 @@ curl -X 'POST' \
 }
 ```
 
-2. Create market request with validation errors
+2. [Create](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/create) market request with validation errors
 
 ### Request
 
@@ -246,7 +247,7 @@ curl -X 'POST' \
 }
 ```
 
-3. Delete market by its registry code successfully
+3. [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market by its registry code successfully
 
 ### Request
 
@@ -260,7 +261,7 @@ curl -X 'DELETE' \
 
 #### 204 (NO CONTENT)
 
-4. Delete not found market with registry code *1234-5*
+4. [Delete](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/delete) market with invalid registry code *1234-5*
 
 ### Request
 
@@ -279,3 +280,157 @@ curl -X 'DELETE' \
   "message": "Market with code 1234-5 not found"
  }
  ```
+ 
+ 5. [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market by its id
+
+### Request
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/markets/61f54902519fe5673eae7c9d' \
+  -H 'accept: */*'
+  ```
+  
+### Response
+   
+#### 200 (OK)
+
+```json
+{
+  "id": "61f54902519fe5673eae7c9d",
+  "legacyIdentifier": 4,
+  "longitude": -46513450,
+  "latitude": -23520880,
+  "setCens": 355030859000173,
+  "area": 3550308005145,
+  "districtCode": 60,
+  "district": "PENHA",
+  "townCode": 21,
+  "town": "PENHA",
+  "firstZone": "Leste",
+  "secondZone": "Leste 1",
+  "name": "VILA NOVA GRANADA",
+  "registryCode": "3048-1",
+  "publicArea": "RUA FRANCISCO DE OLIVEIRA BRAGA",
+  "number": "13.000000",
+  "neighborhood": "VL NOVA GRANADA",
+  "reference": "RUA OLIVIA DE OLIVEIRA"
+}
+```
+
+6. [Get](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/getById) market with invalid id *12345*
+
+### Request
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/markets/12345' \
+  -H 'accept: */*'
+  ```
+
+### Response
+
+#### 404 (NOT FOUND)
+
+```json
+{
+  "message": "Market with id 12345 not found"
+}
+```
+
+7. [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market by its registry code *4038-0*
+
+### Request
+
+```bash
+curl -X 'PATCH' \
+  'http://localhost:8080/api/v1/markets/4038-0' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "legacyIdentifier": 145,
+  "longitude": -46527190,
+  "latitude": -23530784,
+  "setCens": 355030859000046,
+  "area": 3550308005074,
+  "districtCode": 60,
+  "district": "PENHA",
+  "townCode": 21,
+  "town": "PENHA-2",
+  "firstZone": "Leste - 2",
+  "secondZone": "Leste - 2",
+  "name": "MARIA CARLOTA DAS NEVES",
+  "registryCode": "4038-0",
+  "publicArea": "RUA MARIA CARLOTA DAS NEVES",
+  "number": "12345",
+  "neighborhood": "PENHA NOVA",
+  "reference": "LOC AV AMADOR BUENO DA VEIGA"
+}'
+```
+
+### Response
+
+#### 200 (OK)
+
+```json
+{
+  "id": "61f54902519fe5673eae7ca3",
+  "legacyIdentifier": 145,
+  "longitude": -46527190,
+  "latitude": -23530784,
+  "setCens": 355030859000046,
+  "area": 3550308005074,
+  "districtCode": 60,
+  "district": "PENHA",
+  "townCode": 21,
+  "town": "PENHA-2",
+  "firstZone": "Leste - 2",
+  "secondZone": "Leste - 2",
+  "name": "MARIA CARLOTA DAS NEVES",
+  "registryCode": "4038-0",
+  "publicArea": "RUA MARIA CARLOTA DAS NEVES",
+  "number": "12345",
+  "neighborhood": "PENHA NOVA",
+  "reference": "LOC AV AMADOR BUENO DA VEIGA"
+}
+```
+
+8. [Update](http://localhost:8080/webjars/swagger-ui/index.html#/Markets/update) market with invalid registry code *45678*
+
+### Request
+
+```bash
+curl -X 'PATCH' \
+  'http://localhost:8080/api/v1/markets/45678' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "legacyIdentifier": 145,
+  "longitude": -46527190,
+  "latitude": -23530784,
+  "setCens": 355030859000046,
+  "area": 3550308005074,
+  "districtCode": 60,
+  "district": "PENHA",
+  "townCode": 21,
+  "town": "PENHA-2",
+  "firstZone": "Leste - 2",
+  "secondZone": "Leste - 2",
+  "name": "MARIA CARLOTA DAS NEVES",
+  "registryCode": "4038-0",
+  "publicArea": "RUA MARIA CARLOTA DAS NEVES",
+  "number": "12345",
+  "neighborhood": "PENHA NOVA",
+  "reference": "LOC AV AMADOR BUENO DA VEIGA"
+}'
+```
+
+### Response
+
+#### 404 (NOT FOUND)
+
+```json
+{
+  "message": "Market with code 45678 not found"
+}
+```
