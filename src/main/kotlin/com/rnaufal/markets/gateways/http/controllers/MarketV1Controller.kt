@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.Parameters
 import io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY
 import io.swagger.v3.oas.annotations.enums.ParameterStyle
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -146,22 +147,29 @@ class MarketV1Controller(private val marketService: MarketService) {
                 name = "page",
                 `in` = QUERY,
                 description = "The page number criteria to be searched for",
-                schema = Schema(type = "number")
+                schema = Schema(
+                    type = "integer",
+                    defaultValue = "1"
+                )
             ),
             Parameter(
                 name = "size",
                 `in` = QUERY,
                 description = "The page size to be searched for",
-                schema = Schema(type = "number")
+                schema = Schema(
+                    type = "integer",
+                    defaultValue = "10"
+                )
             ),
             Parameter(
                 name = "sort",
-                `in` = QUERY,
                 style = ParameterStyle.FORM,
-                description = "The sort criteria to be searched for",
-                schema = Schema(
-                    type = "string",
-                    example = "name,asc&sort=district,asc&sort=secondZone,desc"
+                `in` = QUERY,
+                description = "The sort criteria for markets in the format: property(,asc|desc). Multiple sort criteria is supported.",
+                array = ArraySchema(
+                    schema = Schema(
+                        type = "string"
+                    )
                 )
             )
         ]
