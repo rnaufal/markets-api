@@ -10,7 +10,7 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 1. [Requirements](#requirements)
 2. [Technologies](#technologies)
 3. [Makefile](#makefile)
-4. [Building and running the application](#ebuilding-and-running-the-application)
+4. [Building and running the application](#building-and-running-the-application)
 5. [Test summary and JaCoCo coverage](#test-summary-and-jacoco-coverage)
 6. [Logs](#logs)
 7. [CI/CD](#cicd)
