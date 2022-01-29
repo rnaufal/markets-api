@@ -270,7 +270,7 @@ curl -X 'DELETE' \
   -H 'accept: */*'
  ```
  
- #### Response
+ ### Response
  
  #### 404 (NOT FOUND)
  
