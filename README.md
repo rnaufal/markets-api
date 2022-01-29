@@ -260,7 +260,7 @@ curl -X 'DELETE' \
 
 #### 204 (NO CONTENT)
 
-4. Delete not found market by its registry code
+4. Delete not found market with registry code *1234-5*
 
 ### Request
 
