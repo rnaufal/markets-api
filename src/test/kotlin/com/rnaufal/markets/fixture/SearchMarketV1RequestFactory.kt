@@ -13,5 +13,11 @@ class SearchMarketV1RequestFactory {
                 name = "VILA FORMOSA",
                 neighborhood = "VL FORMOSA",
             )
+
+        fun buildNameSearchRequestWithEmptyDistrict() =
+            SearchMarketV1Request(
+                district = "",
+                name = "VILA FORMOSA",
+            )
     }
 }

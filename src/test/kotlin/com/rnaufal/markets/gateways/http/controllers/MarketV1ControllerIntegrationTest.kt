@@ -456,5 +456,48 @@ class MarketV1ControllerIntegrationTest(
                 .jsonPath("$.totalElements").isEqualTo(1)
                 .jsonPath("$.numberOfElements").isEqualTo(1)
         }
+
+        @Test
+        fun `should search market by name removing empty district criteria successfully`(): Unit = runBlocking {
+            val market = MarketFactory.buildMarket()
+                .run { marketRepository.save(this) }
+                .awaitFirstOrElse { throw RuntimeException("Error saving market") }
+
+            val searchMarketV1Request = SearchMarketV1RequestFactory.buildNameSearchRequestWithEmptyDistrict()
+
+            val uri = """
+                |/api/v1/markets?district=${searchMarketV1Request.district}
+                |&name=${searchMarketV1Request.name}
+            """.trimMargin().replace("\n", "")
+
+            webTestClient.get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectHeader().valueEquals("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .expectBody()
+                .jsonPath("$.content[0].id").isNotEmpty
+                .jsonPath("$.content[0].legacyIdentifier").isEqualTo(market.legacyIdentifier)
+                .jsonPath("$.content[0].longitude").isEqualTo(market.longitude)
+                .jsonPath("$.content[0].latitude").isEqualTo(market.latitude)
+                .jsonPath("$.content[0].setCens").isEqualTo(market.setCens)
+                .jsonPath("$.content[0].area").isEqualTo(market.area)
+                .jsonPath("$.content[0].districtCode").isEqualTo(market.districtCode)
+                .jsonPath("$.content[0].district").isEqualTo(market.district)
+                .jsonPath("$.content[0].townCode").isEqualTo(market.townCode)
+                .jsonPath("$.content[0].town").isEqualTo(market.town)
+                .jsonPath("$.content[0].firstZone").isEqualTo(market.firstZone)
+                .jsonPath("$.content[0].secondZone").isEqualTo(market.secondZone)
+                .jsonPath("$.content[0].name").isEqualTo(market.name)
+                .jsonPath("$.content[0].registryCode").isEqualTo(market.registryCode)
+                .jsonPath("$.content[0].publicArea").isEqualTo(market.publicArea)
+                .jsonPath("$.content[0].number").isEqualTo(market.number!!)
+                .jsonPath("$.content[0].neighborhood").isEqualTo(market.neighborhood)
+                .jsonPath("$.content[0].reference").isEqualTo(market.reference!!)
+                .jsonPath("$.totalPages").isEqualTo(1)
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.numberOfElements").isEqualTo(1)
+        }
     }
 }
