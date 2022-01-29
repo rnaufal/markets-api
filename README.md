@@ -5,6 +5,23 @@
 
 Markets-API is a reactive Kotlin microservice for managing markets built with the SpringBoot framework and the MongoDB database.
 
+# Content
+
+1. [Requirements](#requirements)
+2. [Technologies](#technologies)
+3. [Makefile](#makefile)
+4. [Building and running the application](#ebuilding-and-running-the-application)
+5. [Test summary and JaCoCo coverage](#test-summary-and-jacoco-coverage)
+6. [Logs](#logs)
+7. [CI/CD](#cicd)
+8. [Health check](#health-check)
+9. [Kubernetes (K8s) probes](#kubernetes-k8s-probes)
+10. [Swagger (API documentation)](#swagger-api-documentation)
+11. [Architecture](#architecture)
+12. [Design](#design)
+13. [JSON API Response](#json-api-response)
+14. [Request and response examples](#request-and-response-examples)
+
 # Requirements
 * [Java 17](https://openjdk.java.net/projects/jdk/17/) for building the application with [Gradle](https://gradle.org).
 * [Docker](https://www.docker.com) should be installed and running as daemon.
