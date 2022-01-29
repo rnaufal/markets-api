@@ -177,8 +177,7 @@ curl -X 'POST' \
 
 #### 201 (CREATED)
 
-```bash
-
+```json
 {
   "id": "61f4669070f21965b0ee9435",
   "legacyIdentifier": 2,
@@ -235,8 +234,7 @@ curl -X 'POST' \
 
 #### 400 (BAD REQUEST)
 
-```bash
-
+```json
 {
   "errors": [
     {
@@ -247,3 +245,37 @@ curl -X 'POST' \
   ]
 }
 ```
+
+3. Delete market by its registry code successfully
+
+### Request
+
+```bash
+curl -X 'DELETE' \
+  'http://localhost:8080/api/v1/markets/7210-9' \
+  -H 'accept: */*'
+ ```
+
+### Response
+
+#### 204 (NO CONTENT)
+
+4. Delete not found market by its registry code
+
+### Request
+
+```bash
+curl -X 'DELETE' \
+  'http://localhost:8080/api/v1/markets/1234-5' \
+  -H 'accept: */*'
+ ```
+ 
+ #### Response
+ 
+ #### 404 (NOT FOUND)
+ 
+ ```json
+ {
+  "message": "Market with code 1234-5 not found"
+ }
+ ```
