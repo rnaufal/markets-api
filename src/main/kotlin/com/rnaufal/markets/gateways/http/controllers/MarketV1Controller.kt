@@ -10,6 +10,10 @@ import com.rnaufal.markets.gateways.http.json.validate
 import com.rnaufal.markets.usecases.MarketService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
+import io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY
+import io.swagger.v3.oas.annotations.enums.ParameterStyle
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.data.domain.Pageable
@@ -112,8 +116,58 @@ class MarketV1Controller(private val marketService: MarketService) {
     @Operation(tags = ["Markets"], summary = "Search markets by criteria")
     @ApiResponse(responseCode = "200")
     @ResponseStatus(HttpStatus.OK)
+    @Parameters(
+        value = [
+            Parameter(
+                name = "district",
+                `in` = QUERY,
+                description = "The district criteria  to be searched for",
+                schema = Schema(type = "string")
+            ),
+            Parameter(
+                name = "firstZone",
+                `in` = QUERY,
+                description = "The firstZone criteria to be searched for",
+                schema = Schema(type = "string")
+            ),
+            Parameter(
+                name = "name",
+                `in` = QUERY,
+                description = "The name criteria to be searched for",
+                schema = Schema(type = "string")
+            ),
+            Parameter(
+                name = "neighborhood",
+                `in` = QUERY,
+                description = "The neighborhood criteria to be searched for",
+                schema = Schema(type = "string")
+            ),
+            Parameter(
+                name = "page",
+                `in` = QUERY,
+                description = "The page number criteria to be searched for",
+                schema = Schema(type = "number")
+            ),
+            Parameter(
+                name = "size",
+                `in` = QUERY,
+                description = "The page size to be searched for",
+                schema = Schema(type = "number")
+            ),
+            Parameter(
+                name = "sort",
+                `in` = QUERY,
+                style = ParameterStyle.FORM,
+                description = "The sort criteria to be searched for",
+                schema = Schema(
+                    type = "string",
+                    example = "name,asc&sort=district,asc&sort=secondZone,desc"
+                )
+            )
+        ]
+    )
     suspend fun search(
-        searchMarketV1Request: SearchMarketV1Request,
+        @Parameter(hidden = true) searchMarketV1Request: SearchMarketV1Request,
         @Parameter(hidden = true) @PageableDefault pageable: Pageable
     ) = searchMarketV1Request.toSearchParameters()
         .run { marketService.search(this, pageable) }
