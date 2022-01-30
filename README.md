@@ -92,7 +92,7 @@ The application should be up and running at `http://localhost:8080` address.
 
 ## Test summary and JaCoCo coverage
 
-The application uses the JaCoCo report coverage tool to measure code coverage. The test summary and JaCoCo report coverage can be found under the project directory at the following paths:
+The application uses the JaCoCo report coverage tool to measure code coverage. The test summary and JaCoCo report coverage can be found under the project directory at the following paths after the build:
 
 ```bash
 {PROJECT_DIR}/build/reports/tests/test/index.html
