@@ -34,6 +34,8 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 
 ## Requirements
 
+Here are the requirements for markets-api service to run:
+
 * [Java 17](https://openjdk.java.net/projects/jdk/17/) for building the application with [Gradle](https://gradle.org).
 * [Docker](https://www.docker.com) should be installed and running as daemon.
 * [DockerCompose](https://github.com/docker/compose) should be installed to build the application and its dependencies as containers.
@@ -63,15 +65,26 @@ Markets-API is a reactive Kotlin microservice for managing markets built with th
 
 ## Makefile
 
-The application uses a *Makefile* which contains some commands to build the application, run it and create its image to run on Docker.
+The application uses a *Makefile* which contains some commands to build the application, create the Docker image and execute it.
 
 ## Building and running the application
+
+Here are some commands that can be executed to prepare and run the application locally in the directory it was checked out:
+
+| Command | About |
+| ------ | ------ |
+| `make dist` | Build, run unit and integration tests, generate JaCoCo coverage report and execute Kotlin linter |
+| `make image` | Execute the same statements as `make dist` and generate the markets-api Docker image to be run  |
+| `make run` | Execute the `make image` command, start the markets-api application and MongoDB containers locally |
+| `make run` | Stop the markets-api and MongoDB containers locally |
+
+Below are the steps to build and run the markets-api service locally:
 
 ```bash
 # Clone the repository
 $ git clone git@github.com:rnaufal/markets-api.git
 
-# Build the application, run unit and integration tests, build Docker image, start the application and MongoDB containers 
+# Build the application, run unit and integration tests, build the Docker image, start the application and MongoDB containers locally
 $ make run
 ```
 
