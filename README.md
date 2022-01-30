@@ -76,7 +76,7 @@ Here are some commands that can be executed to prepare and run the application l
 | `make dist` | Build, run unit and integration tests, generate JaCoCo coverage report and execute Kotlin linter |
 | `make image` | Execute the same statements as `make dist` and generate the markets-api Docker image to be run  |
 | `make run` | Execute the `make image` command, start the markets-api application and MongoDB containers locally |
-| `make run` | Stop the markets-api and MongoDB containers locally |
+| `make stop` | Stop the markets-api and MongoDB containers locally |
 
 Below are the steps to build and run the markets-api service locally:
 
