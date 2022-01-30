@@ -84,6 +84,9 @@ Below are the steps to build and run the markets-api service locally:
 # Clone the repository
 $ git clone git@github.com:rnaufal/markets-api.git
 
+# Enter the directory the project was checked out
+$ cd markets-api
+
 # Build the application, run unit and integration tests, build the Docker image, start the application and MongoDB containers locally
 $ make run
 ```
